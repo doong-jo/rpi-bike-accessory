@@ -1,5 +1,16 @@
 import json
 import os
+import io
+import time
+
+try:
+    from PIL import Image, ImageFile
+except ImportError:
+    exit("This script requires this pillow module\nInstall with : sudo pip install pillow")
+
+# ImageFile.LOAD_TRUNCATED_IMAGES = True
+# import Image
+
 # -------------------- DEFINE FILE ------------------ #
 FILE_STATE_JSON_NAME = "state.json"
 FILE_DIR_RESOURCE = "./res/"
@@ -37,9 +48,24 @@ class FileManager(object):
     def saveResourceLED(ledFileName, bitmapByteArr):
         fileName = "./res/" + ledFileName + FILE_FORMAT_LED_IMAGE
 
-        imageFile = open(fileName, "wb")
-        imageFile.write(bitmapByteArr)
-        imageFile.close()
+        print("saveResourceLED/fileName : ", fileName)
+        print("bitmapByteArr len : ", len(bitmapByteArr))
+
+        try:
+            # imageFile = Image.open(io.BytesIO(bitmapByteArr))
+            imageFile = open(fileName, "wb")
+            imageFile.write(bitmapByteArr)
+            imageFile.close()
+            #time.sleep(10)
+            print "Complete Save!!"
+            print "Complete Load!!"
+
+        except IOError, e:
+            print "Error opening file"
+
+        # imageFile = open(fileName, "wb")
+        # imageFile.write(bitmapByteArr)
+        # imageFile.close()
 
     # def saveImage(self):
         # pass

@@ -107,7 +107,7 @@ class UnicornLED(object):
             'brightness': self.m_curBright
         })
 
-        self.m_saveStateCallback(dicData)
+        # self.m_saveStateCallback(dicData)
 
     def getLEDInfo(self):
         return "info/"+str(self.m_curImageName)+"/"+str(self.m_curSpeed)+"/"+str(self.m_curBright)
@@ -166,9 +166,15 @@ class UnicornLED(object):
             try:
                 if not eq(self.m_curImageName, "noname"):
                     try:
-                        print("show!")
-                        targetImage = Image.open(RESOURCE_DIR + self.m_curImageName + LED_SPRITE_FORMAT)
-                        self.showLED(self.m_curImageName, targetImage, self.m_curType)
+                        # print("show!")
+                        try:
+                            targetImage = Image.open(RESOURCE_DIR + self.m_curImageName + LED_SPRITE_FORMAT)
+                            self.showLED(self.m_curImageName, targetImage, self.m_curType)
+
+                        except IOError, e:
+                            a = 1
+                            # print "Waiting loading Image (After Download Image)"
+                            # print e
 
                     except KeyError:
                         self.m_curImageName = "noname"

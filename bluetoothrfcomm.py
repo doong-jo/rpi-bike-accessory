@@ -1,6 +1,7 @@
 from bluetooth import *
 from filemgr import FileManager
 import threading
+import time
 
 # DEFINE SIGNAL_INDEX
 # LED           0
@@ -126,16 +127,23 @@ class BluetoothRFCOMM(object):
                         valueData = splitData[1]
 
                         if ledBitmapByteArr == "":
+                            print("first insert bytearray")
                             ledBitmapByteArr = bytearray(valueData)
-                        else:
-                            ledBitmapByteArr.extend(valueData)
+                            print("ledBitmapByteArr length : ", len(ledBitmapByteArr))
 
-                        # self.sendMsg(
-                        #     BT_SIGNAL_DOWNLOAD_LED
-                        # )
+                        else:
+                            print("after insert bytearray")
+                            appendByteArr = bytearray(valueData)
+                            ledBitmapByteArr = ledBitmapByteArr + appendByteArr
+                            print("ledBitmapByteArr length : ", len(ledBitmapByteArr))
+
+                        self.sendMsg(
+                            BT_SIGNAL_DOWNLOAD_LED
+                        )
 
                     elif signalData == BT_SIGNAL_DOWNLOAD_DONE_LED:
                         print("DONE DOWNLOAD LED")
+                        print("final ledBitmapByteArr length : ", len(ledBitmapByteArr))
                         FileManager.saveResourceLED(ledName, ledBitmapByteArr)
                         ledBitmapByteArr = ""
                         ledcb(ledName, LED_TYPE_SPRITE, -1, -1)
