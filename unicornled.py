@@ -107,7 +107,7 @@ class UnicornLED(object):
             'brightness': self.m_curBright
         })
 
-        # self.m_saveStateCallback(dicData)
+        self.m_saveStateCallback(dicData)
 
     def getLEDInfo(self):
         return "info/"+str(self.m_curImageName)+"/"+str(self.m_curSpeed)+"/"+str(self.m_curBright)

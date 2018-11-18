@@ -150,12 +150,12 @@ class BluetoothRFCOMM(object):
 
                     elif signalData == BT_SIGNAL_SPEED:
                         print("ADJUST SPEED")
-                        valueData = int(splitData[1])
+                        valueData = int(splitData[1].split(BT_SIGNAL_SPEED)[0])
                         ledcb(-1, -1, valueData * 0.1, -1)
 
                     elif signalData == BT_SIGNAL_BRIGHTNESS:
                         print("ADJUST BRIGHTNESS")
-                        valueData = int(splitData[1])
+                        valueData = int(splitData[1].split(BT_SIGNAL_BRIGHTNESS)[0])
                         ledcb(-1, -1, -1, valueData * 0.1)
 
                     # try:
