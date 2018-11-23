@@ -5,19 +5,18 @@ from unicornled import UnicornLED
 from vibratesw import vibrateSW
 from bluetoothrfcomm import BluetoothRFCOMM
 from filemgr import FileManager
-# from gyroscope import Gyroscope
+from gyroscope import Gyroscope
 from Button_Interface import Button
 # -------------------- DEFINE LED ------------------ #
-## sadfasdfastest asdfsdf asdfasdfssg
 
-#test
+
 
 def main():
     filemanager = FileManager()
     # sw = vibrateSW(23)
-    # asdfsdfasdfasdfsd
+
     bluetooth = BluetoothRFCOMM()
-    # gyroSensor = Gyroscope()
+    gyroSensor = Gyroscope()
     led = UnicornLED(filemanager.readState(), filemanager.saveLEDState)
     start = Button()
 
@@ -25,7 +24,7 @@ def main():
         # sw.run(led.setEmergency, bluetooth.sendMsg)
         led.run()
         bluetooth.run(led.setAttribute, led.getLEDInfo)
-        # gyroSensor.run(led.inturrptLED, bluetooth.sendMsg)
+        gyroSensor.run(led.inturrptLED, bluetooth.sendMsg)
         start.run()
 
     except KeyboardInterrupt:
