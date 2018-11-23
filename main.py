@@ -7,6 +7,7 @@ from bluetoothrfcomm import BluetoothRFCOMM
 from filemgr import FileManager
 from gyroscope import Gyroscope
 from Button_Interface import Button
+from requset_server import RequestMgr
 # -------------------- DEFINE LED ------------------ #
 
 
@@ -17,6 +18,7 @@ def main():
 
     bluetooth = BluetoothRFCOMM()
     gyroSensor = Gyroscope()
+    requestMgr = RequestMgr()
     led = UnicornLED(filemanager.readState(), filemanager.saveLEDState)
     start = Button()
 
@@ -25,6 +27,7 @@ def main():
         led.run()
         bluetooth.run(led.setAttribute, led.getLEDInfo)
         gyroSensor.run(led.inturrptLED, bluetooth.sendMsg)
+        requestMgr.run(gyroSensor.gyroData)
         start.run()
 
     except KeyboardInterrupt:
