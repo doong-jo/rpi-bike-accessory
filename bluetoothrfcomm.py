@@ -39,6 +39,8 @@ BT_SIGNAL_DOWNLOAD_DONE_LED = "DDL"
 BT_SIGNAL_BRIGHTNESS = "B"
 BT_SIGNAL_SPEED = "S"
 
+BT_SIGNAL_FILTER = "F"
+
 BT_READ_BYTE_SEPARATE = "!S!"
 
 # LED OPTIONAL
@@ -157,40 +159,6 @@ class BluetoothRFCOMM(object):
                         print("ADJUST BRIGHTNESS")
                         valueData = int(splitData[1].split(BT_SIGNAL_BRIGHTNESS)[0])
                         ledcb(-1, -1, -1, valueData * 0.1)
-
-                    # try:
-                    #     signalData = int(splitData[0])
-                    #
-                    #     if signalData == 3:
-                    #         valueData = splitData[1]
-                    #         optionalData = splitData[2]
-                    #     else:
-                    #         valueData = int(splitData[1])
-                    #         optionalData = int(splitData[2])
-                    #
-                    # except KeyError:
-                    #     pass
-                    #
-                    # if signalData == 0:
-                    #     ledcb(valueData, optionalData, -1, -1)
-                    #
-                    # elif signalData == 1:
-                    #     ledcb(-1, -1, valueData * 0.1 + optionalData * 0.01, -1)
-                    #
-                    # elif signalData == 2:
-                    #     ledcb(-1, -1, -1, valueData * 0.1 + optionalData * 0.01)
-                    #
-                    # elif signalData == 3:
-                    #     # optionalData : imageName (bird.png)
-                    #     # valueData : byteArray of Bitmap from App
-                    #     fileName = "./res/" + optionalData
-                    #     imageName = optionalData.split('.')[0]
-                    #
-                    #     imageFile = open(fileName, "wb")
-                    #     imageFile.write(valueData)
-                    #     imageFile.close()
-                    #
-                    #     ledcb(imageName, 0, -1, -1)
 
                 except IOError:
                     print("disconnected")

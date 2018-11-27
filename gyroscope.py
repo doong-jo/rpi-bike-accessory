@@ -9,6 +9,10 @@ GYRO_ANGLE_DIVIDE = 131.
 COMPLIMENTARY_ALPHA = 0.95
 COMPLIMENTARY_DT = 0.03
 
+# DEFINE BLUETOOTH
+BT_SIGNAL_FILTER = "F"
+BT_READ_BYTE_SEPARATE = "!S!"
+
 # DEFINE POST REQUEST
 URL = "http://175.123.140.145/"
 DEVICE_COLLECTION = "devicetest"
@@ -58,6 +62,9 @@ class Gyroscope(object):
             print("Gyro_y: " + str(deg_y))
             print("angle_x: " + str(angle_x))
             print("angle_y " + str(angle_y))
+
+            bluetoothSendcb(BT_SIGNAL_FILTER + BT_READ_BYTE_SEPARATE + (str)(self.gyroData['complimentary']) +
+                            BT_READ_BYTE_SEPARATE + (str)(self.gyroData['angle_x']))
 
 
     def run(self, inturruptLEDcb, bluetoothSendcb):
