@@ -41,6 +41,9 @@ BT_SIGNAL_SPEED = "S"
 
 BT_SIGNAL_FILTER = "F"
 
+BT_SIGNAL_RES = "RES"
+BT_SIGNAL_CONNECTED = "CONNECTED"
+
 BT_READ_BYTE_SEPARATE = "!S!"
 
 # LED OPTIONAL
@@ -53,23 +56,35 @@ g_client_sock = None
 
 class BluetoothRFCOMM(object):
     def __init__(self):
+        self.__sendFineState = True
+        self.__isConnected = False
         pass
 
     def sendMsg(self, string):
         global g_client_sock
+        if self.__isConnected is False:
+            return
+
+        if self.__sendFineState is False:
+            return
 
         print("try sendMsg" + string)
 
         try:
             print ("sendMsg Successful")
+            self.__sendFineState = False
             g_client_sock.send(string)
+
         except AttributeError:
             print ("sendMsg Attrubute Error")
 
 
-    def receiveMsg(self, ledcb, ledinfocb):
+    def receiveMsg(self, ledcb, ledinfocb, gyroDataTriggerCb):
         while True:
+            self.__sendFineState = True
+            self.__isConnected = False
 
+            gyroDataTriggerCb(False)
             global g_client_sock
             global ledName
             global ledBitmapByteArr
@@ -92,8 +107,6 @@ class BluetoothRFCOMM(object):
             g_client_sock, client_info = server_sock.accept()
 
             print("Accepted connection from ", client_info)
-
-            self.sendMsg(ledinfocb())
 
             while True:
                 try:
@@ -159,6 +172,17 @@ class BluetoothRFCOMM(object):
                         print("ADJUST BRIGHTNESS")
                         valueData = int(splitData[1].split(BT_SIGNAL_BRIGHTNESS)[0])
                         ledcb(-1, -1, -1, valueData * 0.1)
+                    
+                    elif signalData == BT_SIGNAL_RES:
+                        self.__sendFineState = True
+
+                    elif signalData == BT_SIGNAL_CONNECTED:
+                        self.__isConnected = True
+                        self.sendMsg(ledinfocb())
+
+                        gyroDataTriggerCb(True)
+                        print("receive connect signal")
+
 
                 except IOError:
                     print("disconnected")
@@ -173,7 +197,7 @@ class BluetoothRFCOMM(object):
                     break
 
 
-    def run(self, ledcb, ledinfocb):
-        t1 = threading.Thread(target=self.receiveMsg, args=(ledcb, ledinfocb, ))
+    def run(self, ledcb, ledinfocb, gyroDataTriggerCb):
+        t1 = threading.Thread(target=self.receiveMsg, args=(ledcb, ledinfocb, gyroDataTriggerCb, ))
         t1.daemon = True
         t1.start()

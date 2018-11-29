@@ -33,6 +33,9 @@ WIDTH, HEIGHT = unicornhathd.get_shape()
 LED_SPRITE_FORMAT = '.png'
 RESOURCE_DIR = 'res/'
 
+BT_READ_BYTE_SEPARATE = "!S!"
+
+
 unicornhathd.rotation(LED_DEFAULT_ROTATION)
 unicornhathd.brightness(LED_DEFAULT_BRIGHT)
 
@@ -110,7 +113,7 @@ class UnicornLED(object):
         self.m_saveStateCallback(dicData)
 
     def getLEDInfo(self):
-        return "info/"+str(self.m_curImageName)+"/"+str(self.m_curSpeed)+"/"+str(self.m_curBright)
+        return "info" + BT_READ_BYTE_SEPARATE + str(self.m_curImageName) + BT_READ_BYTE_SEPARATE + str(self.m_curSpeed) + BT_READ_BYTE_SEPARATE + str(self.m_curBright)
 
     def setEmergency(self):
         self.m_curImageName = LED_EMERGENCY_LED_IND

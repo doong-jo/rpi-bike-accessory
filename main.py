@@ -8,6 +8,7 @@ from filemgr import FileManager
 from gyroscope import Gyroscope
 from Button_Interface import Button
 from requset_server import RequestMgr
+from Battery_Indicator import Battery
 # -------------------- DEFINE LED ------------------ #
 
 
@@ -21,15 +22,15 @@ def main():
     requestMgr = RequestMgr()
     led = UnicornLED(filemanager.readState(), filemanager.saveLEDState)
     start = Button()
-
+    # battery_level = Battery()
     try:
         # sw.run(led.setEmergency, bluetooth.sendMsg)
         led.run()
-        bluetooth.run(led.setAttribute, led.getLEDInfo)
+        bluetooth.run(led.setAttribute, led.getLEDInfo, gyroSensor.setBTGyroDataTrigger)
         gyroSensor.run(led.inturrptLED, bluetooth.sendMsg)
-        requestMgr.run(gyroSensor.gyroData)
+        # requestMgr.run(gyroSensor.gyroData)
         start.run()
-
+        # Battery.run(bluetooth.sendMsg())
     except KeyboardInterrupt:
         print("main KeyboardInterrupt")
 

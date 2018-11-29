@@ -1,3 +1,3 @@
 cd /
-cd home/pi/helper
+cd home/pi/helper/
 sudo python main.py
