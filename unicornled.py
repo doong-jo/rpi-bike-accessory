@@ -17,8 +17,7 @@ LED_TYPE_BLINK = 1
 LED_TYPE_EFFECT = 2
 LED_TYPE_NONE = 3
 
-# Default LED is "0" (res/bird.png)
-LED_DEFAULT_NAME = 0
+LED_DEFAULT_NAME = "team8_bird"
 LED_DEFAULT_SPEED = 0.5
 LED_DEFAULT_BRIGHT = 0.5
 LED_DEFAULT_ROTATION = 90
@@ -27,6 +26,8 @@ LED_DEFAULT_TYPE = LED_TYPE_SPRITE
 LED_EMERGENCY_LED_IND = 8
 LED_LEFT_LED_IND = 6
 LED_RIGHT_LED_IND = 7
+
+LED_PASS_ATTRIBUTE = -1
 
 WIDTH, HEIGHT = unicornhathd.get_shape()
 
@@ -39,112 +40,93 @@ BT_READ_BYTE_SEPARATE = "!S!"
 unicornhathd.rotation(LED_DEFAULT_ROTATION)
 unicornhathd.brightness(LED_DEFAULT_BRIGHT)
 
-# TODO : Selectable Load Image
-# g_Images = {
-#     0: Image.open('res/bird.png'),
-#     1: Image.open('res/lofi.png'),
-#     2: Image.open('res/windy.png'),
-#     3: Image.open('res/snow.png'),
-#     4: Image.open('res/rain.png'),
-#     5: Image.open('res/cute.png'),
-#     6: Image.open('res/movingArrowLeft_blink.png'),
-#     7: Image.open('res/movingArrowRight_blink.png'),
-#     8: Image.open('res/emergency.png'),
-#     9: Image.open('res/mario.png'),
-#     10: Image.open('res/boy.png'),
-# }
-#######################################################
-
-
 class UnicornLED(object):
 
-    def __init__(self, state, saveStateCb):
-        # self.m_curImageName = LED_DEFAULT_NAME
-        # self.m_curSpeed = LED_DEFAULT_SPEED
-        # self.m_curType = LED_TYPE_NONE
-        # self.m_curBright = LED_DEFAULT_BRIGHT
+    def __init__(self, state, save_stat_cb):
 
         if state is not None:
             for ledState in state['LED_STATE']:
-                self.m_curImageName = ledState['index']
-                self.m_curType = float(ledState['type'])
-                self.m_curSpeed = float(ledState['speed'])
-                self.m_curBright = float(ledState['brightness'])
-                unicornhathd.brightness(self.m_curBright)
+                self._curImageName = ledState['index']
+                self._curType = float(ledState['type'])
+                self._curSpeed = float(ledState['speed'])
+                self._curBright = float(ledState['brightness'])
+                unicornhathd.brightness(self._curBright)
         else:
-            self.m_curImageName = LED_DEFAULT_NAME
-            self.m_curType = LED_DEFAULT_TYPE
-            self.m_curSpeed = LED_DEFAULT_SPEED
-            self.m_curBright = LED_DEFAULT_BRIGHT
+            self._curImageName = LED_DEFAULT_NAME
+            self._curType = LED_DEFAULT_TYPE
+            self._curSpeed = LED_DEFAULT_SPEED
+            self._curBright = LED_DEFAULT_BRIGHT
             unicornhathd.brightness(LED_DEFAULT_BRIGHT)
 
-        self.IsInturrpt = False
-        self.m_saveStateCallback = saveStateCb
+        self._IsInturrpt = False
+        self._saveStateCb = save_stat_cb
 
     # LED Callback Function
-    def setAttribute(self, imageName, type, speed, brightness):
+    def set_attribute(self, imagename, type, speed, brightness):
         # set attributes from bluetooth data
 
-        if self.IsInturrpt is True:
+        if self._IsInturrpt is True:
             return
 
-        if imageName != -1:
-            self.m_curImageName = imageName
+        if imagename != LED_PASS_ATTRIBUTE:
+            self._curImageName = imagename
 
-        if type != -1:
-            self.m_curType = type
+        if type != LED_PASS_ATTRIBUTE:
+            self._curType = type
 
-        if speed != -1:
-            self.m_curSpeed = speed
+        if speed != LED_PASS_ATTRIBUTE:
+            self._curSpeed = speed
 
-        if brightness != -1:
-            self.m_curBright = brightness
+        if brightness != LED_PASS_ATTRIBUTE:
+            self._curBright = brightness
             unicornhathd.brightness(brightness)
 
-        dicData = {}
-        dicData['LED_STATE'] = []
-        dicData['LED_STATE'].append({
-            'index': self.m_curImageName,
-            'type': self.m_curType,
-            'speed': self.m_curSpeed,
-            'brightness': self.m_curBright
+        obj_LED = {}
+        obj_LED['LED_STATE'] = []
+        obj_LED['LED_STATE'].append({
+            'index': self._curImageName,
+            'type': self._curType,
+            'speed': self._curSpeed,
+            'brightness': self._curBright
         })
 
-        self.m_saveStateCallback(dicData)
+        self._saveStateCb(obj_LED)
 
-    def getLEDInfo(self):
-        return "info" + BT_READ_BYTE_SEPARATE + str(self.m_curImageName) + BT_READ_BYTE_SEPARATE + str(self.m_curSpeed) + BT_READ_BYTE_SEPARATE + str(self.m_curBright)
+    def get_led_info(self):
+        return "info" + BT_READ_BYTE_SEPARATE + \
+               str(self._curImageName) + BT_READ_BYTE_SEPARATE + \
+               str(self._curSpeed) + BT_READ_BYTE_SEPARATE + \
+               str(self._curBright)
 
-    def setEmergency(self):
-        self.m_curImageName = LED_EMERGENCY_LED_IND
-        self.m_curType = LED_TYPE_BLINK
+    def set_emergency(self):
+        self._curImageName = LED_EMERGENCY_LED_IND
+        self._curType = LED_TYPE_BLINK
 
-    def blinkLED(self):
+    def blink_LED(self):
         unicornhathd.show()
         time.sleep(0.5)
         unicornhathd.off()
         time.sleep(0.3)
 
-    def showLED(self, imagename, targetImage, type):
-        if self.IsInturrpt is True:
-            imagename = self.m_interruptImageName
-            targetImage = Image.open(RESOURCE_DIR + self.m_interruptImageName + LED_SPRITE_FORMAT)
-            type = self.m_interruptImageType
+    def show_LED(self, imagename, targetImage, type):
+        # if self._IsInturrpt is True:
+        #     imagename = self._interruptImageName
+        #     targetImage = Image.open(RESOURCE_DIR + self._interruptImageName + LED_SPRITE_FORMAT)
+        #     type = self._interruptImageType
 
         for o_x in range(int(targetImage.size[0] / WIDTH)):
             for o_y in range(int(targetImage.size[1] / HEIGHT)):
                 valid = False
 
                 # if signal not equal, Interrupt LED!
-                if self.IsInturrpt is True:
-                    if imagename == LED_LEFT_LED_IND or imagename == LED_RIGHT_LED_IND or imagename == LED_EMERGENCY_LED_IND:
-                        pass
-                    else:
-                        break
-                else:
-                    if not eq(self.m_curImageName, imagename):
-                        break
-
+                # if self._IsInturrpt is True:
+                #     if imagename == LED_LEFT_LED_IND or imagename == LED_RIGHT_LED_IND or imagename == LED_EMERGENCY_LED_IND:
+                #         pass
+                #     else:
+                #         break
+                # else:
+                if not eq(self._curImageName, imagename):
+                    break
 
                 for x in range(WIDTH):
                     for y in range(HEIGHT):
@@ -156,32 +138,27 @@ class UnicornLED(object):
                 if valid:
                     if eq(type, LED_TYPE_SPRITE):
                         unicornhathd.show()
-                        time.sleep(self.m_curSpeed)
+                        time.sleep(self._curSpeed)
 
                     elif eq(type, LED_TYPE_BLINK):
-                        self.blinkLED()
+                        self.blink_LED()
 
                     elif eq(type, LED_TYPE_NONE):
                         unicornhathd.show()
 
-    def controlLED(self):
+    def control_LED(self):
         while True:
             try:
-                if not eq(self.m_curImageName, "noname"):
-                    try:
-                        # print("show!")
-                        try:
-                            targetImage = Image.open(RESOURCE_DIR + self.m_curImageName + LED_SPRITE_FORMAT)
-                            self.showLED(self.m_curImageName, targetImage, self.m_curType)
+                try:
+                    targetImage = Image.open(RESOURCE_DIR + self._curImageName + LED_SPRITE_FORMAT)
+                    self.show_LED(self._curImageName, targetImage, self._curType)
 
-                        except IOError, e:
-                            a = 1
-                            # print "Waiting loading Image (After Download Image)"
-                            # print e
+                except IOError, e:
+                    print "Waiting loading Image (After Download Image)"
+                    print e
 
-                    except KeyError:
-                        self.m_curImageName = "noname"
-                        print("not exist image")
+                except KeyError:
+                    print("not exist image")
 
             except KeyboardInterrupt:
                 print("disconnected")
@@ -189,24 +166,24 @@ class UnicornLED(object):
                 print("receiveMsg KeyboardInterrupt")
                 break
 
-    def inturrptLED(self, type):
-        # print("IsInturrpt is " + type)
-        self.IsInturrpt = True
-
-        if type == "left":
-            self.m_interruptImageName = LED_LEFT_LED_IND
-            self.m_interruptImageType = LED_TYPE_BLINK
-        elif type == "right":
-            self.m_interruptImageName = LED_RIGHT_LED_IND
-            self.m_interruptImageType = LED_TYPE_BLINK
-        elif type == "emergency":
-            self.m_interruptImageName = LED_EMERGENCY_LED_IND
-            self.m_interruptImageType = LED_TYPE_BLINK
-        elif type == "none":
-            self.IsInturrpt = False
+    # def inturrpt_LED(self, type):
+    #     # print("IsInturrpt is " + type)
+    #     self._IsInturrpt = True
+    #
+    #     if type == "left":
+    #         self._interruptImageName = LED_LEFT_LED_IND
+    #         self._interruptImageType = LED_TYPE_BLINK
+    #     elif type == "right":
+    #         self._interruptImageName = LED_RIGHT_LED_IND
+    #         self._interruptImageType = LED_TYPE_BLINK
+    #     elif type == "emergency":
+    #         self._interruptImageName = LED_EMERGENCY_LED_IND
+    #         self._interruptImageType = LED_TYPE_BLINK
+    #     elif type == "none":
+    #         self._IsInturrpt = False
 
     def run(self):
-        t1 = threading.Thread(target=self.controlLED)
+        t1 = threading.Thread(target=self.control_LED)
         t1.daemon = True
         t1.start()
 

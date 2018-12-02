@@ -1,36 +1,37 @@
-import time
-from subprocess import call
-
+# import time
+# from subprocess import call
+# from vibratesw import vibrateSW
+# from Button_Interface import Button
+# from requset_server import RequestMgr
+# from Battery_Indicator import Battery
 from unicornled import UnicornLED
-from vibratesw import vibrateSW
 from bluetoothrfcomm import BluetoothRFCOMM
 from filemgr import FileManager
-from gyroscope import Gyroscope
-from Button_Interface import Button
-from requset_server import RequestMgr
-from Battery_Indicator import Battery
-# -------------------- DEFINE LED ------------------ #
-
+from gyroscope import Mpu
 
 
 def main():
-    filemanager = FileManager()
     # sw = vibrateSW(23)
-
-    bluetooth = BluetoothRFCOMM()
-    gyroSensor = Gyroscope()
-    requestMgr = RequestMgr()
-    led = UnicornLED(filemanager.readState(), filemanager.saveLEDState)
-    start = Button()
     # battery_level = Battery()
+    # requestMgr = RequestMgr()
+    # start = Button()
+    file_manager = FileManager()
+    bluetooth = BluetoothRFCOMM()
+    mpu = Mpu()
+    led = UnicornLED(file_manager.read_state(), file_manager.save_state)
     try:
         # sw.run(led.setEmergency, bluetooth.sendMsg)
-        led.run()
-        bluetooth.run(led.setAttribute, led.getLEDInfo, gyroSensor.setBTGyroDataTrigger)
-        gyroSensor.run(led.inturrptLED, bluetooth.sendMsg)
-        # requestMgr.run(gyroSensor.gyroData)
-        start.run()
         # Battery.run(bluetooth.sendMsg())
+        # requestMgr.run(gyroSensor.gyroData)
+        # start.run()
+        led.run()
+        bluetooth.run(led.set_attribute,
+                      led.get_led_info,
+                      mpu.set_bluetooth_trigger,
+                      file_manager.save_image_LED,
+                      file_manager.get_exists_LED)
+        mpu.run(bluetooth.send_message)
+
     except KeyboardInterrupt:
         print("main KeyboardInterrupt")
 
