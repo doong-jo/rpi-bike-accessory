@@ -1,129 +1,119 @@
 from mpu6050 import mpu6050
 import threading
-import time
 import math
+import time
+import datetime
+from velocity_corner import vel_corner
 
-PI = 3.141592
-SUM_COUNT = 3
-EMERGENCY_ANGLE = 150
-STOP_ANGLE = 30
+GYRO_ANGLE_DIVIDE = 131.
+ACC_DIMENSION_DIVIDE=16384.
+ANALYZE_INTERVAL_TIME = 5
+ANGLE_DEVICE = 12
+ACC_DEVICE = 1.5
+
+#  DEFINE COMPLIMENTARY CONSTANTS
+COMPLIMENTARY_ALPHA = 0.98
+COMPLIMENTARY_DT = 0.02
+
+# DEFINE BLUETOOTH
+BT_SIGNAL_FILTER = "F"
+BT_READ_BYTE_SEPARATE = "!S!"
+
 
 def get_y_rotation(x, y, z):
-    radians = math.atan2(x, dist(y, z))
+    radians = math.atan2((-1)*z, dist(y, x))
     return -math.degrees(radians)
 
 
-def get_x_rotation(x, y, z):
+def get_z_rotation(x, y, z):
     radians = math.atan2(y, dist(x, z))
     return math.degrees(radians)
 
 
-def dist(a,b):
+def dist(a, b):
     return math.sqrt((a*a)+(b*b))
 
-class Gyroscope(object):
+
+class Mpu(object):
 
     def __init__(self):
-        self.sensor = mpu6050(0x68)
+        self._sensor = mpu6050(0x68)
+        self._gyroData = {}
+        self._gyroTrigger = False
 
-    # def detect_emergency(self):
-    #     for i in range(3):
-    #         self.accel_calculate()
+    def set_bluetooth_trigger(self, enable):
+        self._gyroTrigger = enable
 
+    def detect(self, bluetooth_send_cb):
+        vel_cor= vel_corner()
+        time_interval = 0
+        accel_interval = 0
+        roll_interval = 0
+        sensor_data_store = []
 
+        angle_x = 0
+        angle_y = 0
 
-
-    def getAccelData(self):
-        return self.gyroscope_sensor().accelerometer_data()
-
-    def getGyroData(self):
-        return self.gyroscope_sensor().get_gyro_data()
-
-
-    def detect(self, inturruptLEDcb, bluetoothSendcb):
         while True:
-            accel_data = self.sensor.get_accel_data()
-            gyro_data = self.sensor.get_gyro_data()
-            temp = self.sensor.get_temp()
-
-            #print("Accelerometer data")
-            #print("x: " + str(accel_data['x']))
-            #print("y: " + str(accel_data['y']))
-            #print("z: " + str(accel_data['z']))
-            #
-            #print("Gyroscope data")
-            #print("x: " + str(gyro_data['x']))
-            #print("y: " + str(gyro_data['y']))
-            #print("z: " + str(gyro_data['z']))
-
-            divAccel_X = accel_data['x'] / 16384.0
-            divAccel_Y = accel_data['y'] / 16384.0
-            divAccel_Z = accel_data['z'] / 16384.0
-
-            rotation_X = get_x_rotation(divAccel_X, divAccel_Y, divAccel_Z)
-            rotation_Y = get_y_rotation(divAccel_X, divAccel_Y, divAccel_Z)
+            acc_data = self._sensor.get_accel_data()
+            gyro_data = self._sensor.get_gyro_data()
 
 
-            # print "X Rotation: ", get_x_rotation(divAccel_X, divAccel_Y,
-            #                                      divAccel_Z)
-            # print "Y Rotation: ", get_y_rotation(divAccel_X, divAccel_Y,
-            #                                      divAccel_Z)
+            absolute_acc = math.sqrt(acc_data['x'] * acc_data['x'] +
+                                     acc_data['y'] * acc_data['y'] +
+                                     acc_data['z'] * acc_data['z'])
 
-            IsEmergency = False
+            gyro_data_z = -1 * gyro_data['z'] / GYRO_ANGLE_DIVIDE
+            gyro_data_y = gyro_data['y'] / GYRO_ANGLE_DIVIDE
+            deg_x = get_z_rotation(acc_data['x'], acc_data['y'], acc_data['z'])
+            deg_y = get_y_rotation(acc_data['x'], acc_data['y'], acc_data['z'])
+            dgy_z = gyro_data_z
+            dgy_y = gyro_data_y
+            angle_x = (COMPLIMENTARY_ALPHA * (angle_x + (dgy_z * COMPLIMENTARY_DT))) + ((1-COMPLIMENTARY_ALPHA) * deg_x)
+            angle_y = (COMPLIMENTARY_ALPHA * (angle_y + (dgy_y * COMPLIMENTARY_DT))) + ((1-COMPLIMENTARY_ALPHA) * deg_y)
 
-            angle_value = 0
+            self._gyroData['complimentary'] = dist(angle_x, angle_y)
+            self._gyroData['angle_x'] = angle_x
+            # self._gyroData['accel'] = absolute_acc
 
-            angle_value += gyro_data['x']
-            angle_value += gyro_data['y']
-            angle_value += gyro_data['z']
-            
-            print("angleX : " + str(gyro_data['x']));
-            print("angleY : " + str(gyro_data['y']));
-            print("angleZ : " + str(gyro_data['z']));
+            cur_time = time.time()
 
-            print("angle_value : ")
-            print math.fabs(angle_value)
+            sensor_data_store.append({
+                'time': time.time(),
+                'accel': absolute_acc
+            })
+            accel_interval = accel_interval + absolute_acc
 
+            remove_data = sensor_data_store[0]
 
-            if math.fabs(angle_value) >= EMERGENCY_ANGLE:
-                IsEmergency = True
-                bluetoothSendcb("EMERGENCY")
+            if cur_time - remove_data['time'] > ANALYZE_INTERVAL_TIME:
+                accel_interval = accel_interval - remove_data['accel']
 
-            if math.fabs(gyro_data['y']) >= STOP_ANGLE:
-                IsEmergency = True
+                store_size = len(sensor_data_store)
+                accel_det = accel_interval / store_size
+                self._gyroData['accel'] = accel_det
 
-            if rotation_X >= 20:
-                inturruptLEDcb("left")
-                print("inturrptLED RIGHT")
-            elif rotation_X <= -20:
-                inturruptLEDcb("right")
-                print("inturrptLED LEFT")
-            elif IsEmergency:
-                inturruptLEDcb("emergency")
-                print("inturrptLED EMNERGENCY")
-            else:
-                inturruptLEDcb("none")
-                print("inturrptLED NONE")
+                sensor_data_store.remove(remove_data)
+            if acc_data['z'] <= -ACC_DEVICE and vel_cor.get_running_state() is False:
+                vel_cor.run(1)
+
+            if (angle_x <= -ANGLE_DEVICE or angle_x >= ANGLE_DEVICE) and vel_cor.get_running_state() is False:
+                vel_cor.run(2)
 
 
-            print("Temp: " + str(temp) + " C")
-            # self.accel_calculate()
-            time.sleep(0.25)
+            if self._gyroTrigger is False:
+                continue
 
-    # def accel_calculate(self) :
-    #     accel_data = self.sensor.get_accel_data()
-    #     gyro_data = self.sensor.get_gyro_data()
-    #
-    #     deg = math.atan2(accel_data['x'], accel_data['z']) * 180 /PI
-    #     dgy_x = gyro_data['y'] / 131.
-    #     self.angle = (0.95 * (self.angle + (dgy_x * 0.001))) + (0.5 * deg)
-    #
-    #     print("deg : " + deg)
 
-    def run(self, inturruptLEDcb, bluetoothSendcb):
-        t1 = threading.Thread(target=self.detect, args=(inturruptLEDcb, bluetoothSendcb,))
+            # bluetooth_send_cb(BT_SIGNAL_FILTER + BT_READ_BYTE_SEPARATE + (str)(self._gyroData['complimentary']) +
+            #                 BT_READ_BYTE_SEPARATE + (str)(self._gyroData['angle_x']) + BT_READ_BYTE_SEPARATE +
+            #                 (str)(self._gyroData['accel']))
+            bluetooth_send_cb(BT_SIGNAL_FILTER + BT_READ_BYTE_SEPARATE + (str)(self._gyroData['angle_x']) +
+                              BT_READ_BYTE_SEPARATE + (str)(self._gyroData['accel']))
+
+    def run(self, bluetooth_send_cb):
+        t1 = threading.Thread(target=self.detect, args=(bluetooth_send_cb,))
         t1.daemon = True
         t1.start()
 
 # END
-

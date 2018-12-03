@@ -1,7 +1,6 @@
 from bluetooth import *
 from filemgr import FileManager
 import threading
-import time
 
 # DEFINE SIGNAL_INDEX
 # LED           0
@@ -39,38 +38,51 @@ BT_SIGNAL_DOWNLOAD_DONE_LED = "DDL"
 BT_SIGNAL_BRIGHTNESS = "B"
 BT_SIGNAL_SPEED = "S"
 
+BT_SIGNAL_FILTER = "F"
+
+BT_SIGNAL_RES = "RES"
+BT_SIGNAL_CONNECTED = "CONNECTED"
+
 BT_READ_BYTE_SEPARATE = "!S!"
 
-# LED OPTIONAL
+# LED
 LED_TYPE_SPRITE = 0
+LED_PASS_ATTRIBUTE = -1
 ######################################################
 
 
-
-g_client_sock = None
-
 class BluetoothRFCOMM(object):
     def __init__(self):
-        pass
+        self._sendFineState = True
+        self._isConnected = False
+        self._client_sock = None
 
-    def sendMsg(self, string):
-        global g_client_sock
+    def send_message(self, string):
+        if self._isConnected is False:
+            return
+
+        if self._sendFineState is False:
+            return
 
         print("try sendMsg" + string)
 
         try:
             print ("sendMsg Successful")
-            g_client_sock.send(string)
+            self._sendFineState = False
+            self._client_sock.send(string)
+
         except AttributeError:
             print ("sendMsg Attrubute Error")
 
-
-    def receiveMsg(self, ledcb, ledinfocb):
+    def receive_message(self, led_set_attribute, led_get_info, gyro_bluetooth_trigger, file_save_image, file_get_exists):
         while True:
+            self._sendFineState = True
+            self._isConnected = False
 
-            global g_client_sock
-            global ledName
-            global ledBitmapByteArr
+            gyro_bluetooth_trigger(False)
+
+            bitmap_byte_arr_LED = ""
+            cur_name_LED = ""
 
             server_sock = BluetoothSocket(RFCOMM)
             server_sock.bind(('', PORT_ANY))
@@ -83,129 +95,105 @@ class BluetoothRFCOMM(object):
                               service_classes=[BT_UUID, SERIAL_PORT_CLASS],
                               profiles=[SERIAL_PORT_PROFILE])
 
-            ledBitmapByteArr = ""
-            ledFileName = ""
-
             print("Waiting for connection : channel %d" % port)
-            g_client_sock, client_info = server_sock.accept()
+            self._client_sock, client_info = server_sock.accept()
 
             print("Accepted connection from ", client_info)
-
-            self.sendMsg(ledinfocb())
 
             while True:
                 try:
                     print("Wating for recv")
-                    data = g_client_sock.recv(BT_SIZE_READ_BYTE)
+                    data = self._client_sock.recv(BT_SIZE_READ_BYTE)
                     print("data length : ", len(data))
                     print("data : %s", data)
 
-                    splitData = data.split(BT_READ_BYTE_SEPARATE)
-                    signalData = splitData[0]
+                    split_data = data.split(BT_READ_BYTE_SEPARATE)
+                    signal_data = split_data[0]
 
-                    if signalData == BT_SIGNAL_ASK_LED:
+                    if signal_data == BT_SIGNAL_ASK_LED:
                         print("ASK_LED")
-                        valueData = splitData[1]
+                        value_data = split_data[1]
 
-                        ledName = valueData
-                        exists = FileManager.getExistsResourceLED(ledName)
+                        cur_name_LED = value_data
+                        exists = file_get_exists(cur_name_LED)
 
                         if exists:
                             exists = BT_SIGNAL_RES_EXIST_LED
-                            ledcb(ledName, LED_TYPE_SPRITE, -1, -1)
+                            led_set_attribute(cur_name_LED, LED_TYPE_SPRITE, LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE)
                         else:
                             exists = BT_SIGNAL_RES_DOWNLOAD_LED
 
-                        self.sendMsg(
+                        self.send_message(
                             BT_SIGNAL_RESPONSE_LED +
                             BT_READ_BYTE_SEPARATE +
                             exists
                         )
 
-                    elif signalData == BT_SIGNAL_DOWNLOAD_LED:
-                        print("DOWNLAOD LED")
-                        valueData = splitData[1]
+                    elif signal_data == BT_SIGNAL_DOWNLOAD_LED:
+                        print("DOWNLOAD LED")
+                        value_data = split_data[1]
 
-                        if ledBitmapByteArr == "":
-                            print("first insert bytearray")
-                            ledBitmapByteArr = bytearray(valueData)
-                            print("ledBitmapByteArr length : ", len(ledBitmapByteArr))
+                        if bitmap_byte_arr_LED == "":
+                            # print("first insert bytearray")
+                            bitmap_byte_arr_LED = bytearray(value_data)
+                            # print("bitmap_byte_arr_LED length : ", len(bitmap_byte_arr_LED))
 
                         else:
-                            print("after insert bytearray")
-                            appendByteArr = bytearray(valueData)
-                            ledBitmapByteArr = ledBitmapByteArr + appendByteArr
-                            print("ledBitmapByteArr length : ", len(ledBitmapByteArr))
+                            # print("after insert bytearray")
+                            appendByteArr = bytearray(value_data)
+                            bitmap_byte_arr_LED = bitmap_byte_arr_LED + appendByteArr
+                            # print("bitmap_byte_arr_LED length : ", len(bitmap_byte_arr_LED))
 
-                        self.sendMsg(
+                        self.send_message(
                             BT_SIGNAL_DOWNLOAD_LED
                         )
 
-                    elif signalData == BT_SIGNAL_DOWNLOAD_DONE_LED:
-                        print("DONE DOWNLOAD LED")
-                        print("final ledBitmapByteArr length : ", len(ledBitmapByteArr))
-                        FileManager.saveResourceLED(ledName, ledBitmapByteArr)
-                        ledBitmapByteArr = ""
-                        ledcb(ledName, LED_TYPE_SPRITE, -1, -1)
+                    elif signal_data == BT_SIGNAL_DOWNLOAD_DONE_LED:
+                        # print("DONE DOWNLOAD LED")
+                        # print("final bitmap_byte_arr_LED length : ", len(bitmap_byte_arr_LED))
+                        file_save_image(cur_name_LED, bitmap_byte_arr_LED)
+                        bitmap_byte_arr_LED = ""
+                        led_set_attribute(cur_name_LED, LED_TYPE_SPRITE, LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE)
 
-                    elif signalData == BT_SIGNAL_SPEED:
-                        print("ADJUST SPEED")
-                        valueData = int(splitData[1].split(BT_SIGNAL_SPEED)[0])
-                        ledcb(-1, -1, valueData * 0.1, -1)
+                    elif signal_data == BT_SIGNAL_SPEED:
+                        # print("ADJUST SPEED")
+                        value_data = int(split_data[1].split(BT_SIGNAL_SPEED)[0])
+                        led_set_attribute(LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, value_data * 0.1, LED_PASS_ATTRIBUTE)
 
-                    elif signalData == BT_SIGNAL_BRIGHTNESS:
-                        print("ADJUST BRIGHTNESS")
-                        valueData = int(splitData[1].split(BT_SIGNAL_BRIGHTNESS)[0])
-                        ledcb(-1, -1, -1, valueData * 0.1)
+                    elif signal_data == BT_SIGNAL_BRIGHTNESS:
+                        # print("ADJUST BRIGHTNESS")
+                        value_data = int(split_data[1].split(BT_SIGNAL_BRIGHTNESS)[0])
+                        print "bright value : " + (str)(value_data)
+                        led_set_attribute(LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, value_data * 0.1)
+                    
+                    elif signal_data == BT_SIGNAL_RES:
+                        self._sendFineState = True
 
-                    # try:
-                    #     signalData = int(splitData[0])
-                    #
-                    #     if signalData == 3:
-                    #         valueData = splitData[1]
-                    #         optionalData = splitData[2]
-                    #     else:
-                    #         valueData = int(splitData[1])
-                    #         optionalData = int(splitData[2])
-                    #
-                    # except KeyError:
-                    #     pass
-                    #
-                    # if signalData == 0:
-                    #     ledcb(valueData, optionalData, -1, -1)
-                    #
-                    # elif signalData == 1:
-                    #     ledcb(-1, -1, valueData * 0.1 + optionalData * 0.01, -1)
-                    #
-                    # elif signalData == 2:
-                    #     ledcb(-1, -1, -1, valueData * 0.1 + optionalData * 0.01)
-                    #
-                    # elif signalData == 3:
-                    #     # optionalData : imageName (bird.png)
-                    #     # valueData : byteArray of Bitmap from App
-                    #     fileName = "./res/" + optionalData
-                    #     imageName = optionalData.split('.')[0]
-                    #
-                    #     imageFile = open(fileName, "wb")
-                    #     imageFile.write(valueData)
-                    #     imageFile.close()
-                    #
-                    #     ledcb(imageName, 0, -1, -1)
+                    elif signal_data == BT_SIGNAL_CONNECTED:
+                        self._isConnected = True
+                        self.send_message(led_get_info())
+
+                        gyro_bluetooth_trigger(True)
+                        # print("receive connect signal")
 
                 except IOError:
                     print("disconnected")
-                    g_client_sock.close()
+                    self._client_sock.close()
                     server_sock.close()
                     break
 
                 except KeyboardInterrupt:
                     print("receiveMsg KeyboardInterrupt")
-                    g_client_sock.close()
+                    self._client_sock.close()
                     server_sock.close()
                     break
 
-
-    def run(self, ledcb, ledinfocb):
-        t1 = threading.Thread(target=self.receiveMsg, args=(ledcb, ledinfocb, ))
+    def run(self, led_set_attribute, led_get_info, gyro_bluetooth_trigger, save_image, get_exists):
+        t1 = threading.Thread(target=self.receive_message,
+                              args=(led_set_attribute,
+                                    led_get_info,
+                                    gyro_bluetooth_trigger,
+                                    save_image,
+                                    get_exists))
         t1.daemon = True
         t1.start()
