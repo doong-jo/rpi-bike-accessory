@@ -3,10 +3,13 @@ import threading
 import math
 import time
 import datetime
+from velocity_corner import vel_corner
 
 GYRO_ANGLE_DIVIDE = 131.
 ACC_DIMENSION_DIVIDE=16384.
 ANALYZE_INTERVAL_TIME = 5
+ANGLE_DEVICE = 12
+ACC_DEVICE = 1.5
 
 #  DEFINE COMPLIMENTARY CONSTANTS
 COMPLIMENTARY_ALPHA = 0.98
@@ -16,10 +19,6 @@ COMPLIMENTARY_DT = 0.02
 BT_SIGNAL_FILTER = "F"
 BT_READ_BYTE_SEPARATE = "!S!"
 
-# FUZZY LOGIC
-FUZZY_LOW = 0.5
-FUZZY_MEDIUM = 1
-FUZZY_HIGH = "H"
 
 def get_y_rotation(x, y, z):
     radians = math.atan2((-1)*z, dist(y, x))
@@ -46,8 +45,8 @@ class Mpu(object):
         self._gyroTrigger = enable
 
     def detect(self, bluetooth_send_cb):
-
-        cnt = 1
+        vel_cor= vel_corner()
+        time_interval = 0
         accel_interval = 0
         roll_interval = 0
         sensor_data_store = []
@@ -75,7 +74,7 @@ class Mpu(object):
 
             self._gyroData['complimentary'] = dist(angle_x, angle_y)
             self._gyroData['angle_x'] = angle_x
-            self._gyroData['accel'] = absolute_acc
+            # self._gyroData['accel'] = absolute_acc
 
             cur_time = time.time()
 
@@ -92,24 +91,25 @@ class Mpu(object):
 
                 store_size = len(sensor_data_store)
                 accel_det = accel_interval / store_size
+                self._gyroData['accel'] = accel_det
 
                 sensor_data_store.remove(remove_data)
+            if acc_data['z'] <= -ACC_DEVICE and vel_cor.get_running_state() is False:
+                vel_cor.run(1)
 
-                print accel_det
+            if (angle_x <= -ANGLE_DEVICE or angle_x >= ANGLE_DEVICE) and vel_cor.get_running_state() is False:
+                vel_cor.run(2)
 
-
-            # print("Gyro_x: " + str(deg_x))
-            # print("Gyro_y: " + str(deg_y))
-            # print("angle_x: " + str(angle_x))
-            # print("angle_y: " + str(angle_y))
-            # print("acc: " + str(absolute_acc))
 
             if self._gyroTrigger is False:
                 continue
 
+
             # bluetooth_send_cb(BT_SIGNAL_FILTER + BT_READ_BYTE_SEPARATE + (str)(self._gyroData['complimentary']) +
             #                 BT_READ_BYTE_SEPARATE + (str)(self._gyroData['angle_x']) + BT_READ_BYTE_SEPARATE +
             #                 (str)(self._gyroData['accel']))
+            bluetooth_send_cb(BT_SIGNAL_FILTER + BT_READ_BYTE_SEPARATE + (str)(self._gyroData['angle_x']) +
+                              BT_READ_BYTE_SEPARATE + (str)(self._gyroData['accel']))
 
     def run(self, bluetooth_send_cb):
         t1 = threading.Thread(target=self.detect, args=(bluetooth_send_cb,))
