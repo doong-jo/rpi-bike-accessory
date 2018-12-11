@@ -8,7 +8,7 @@ from unicornled import UnicornLED
 from bluetoothrfcomm import BluetoothRFCOMM
 from filemgr import FileManager
 from gyroscope import Mpu
-
+from graphdrawer import GraphDrawer
 
 def main():
     # sw = vibrateSW(23)
@@ -19,6 +19,8 @@ def main():
     bluetooth = BluetoothRFCOMM()
     mpu = Mpu()
     led = UnicornLED(file_manager.read_state(), file_manager.save_state)
+    graph_drawer = GraphDrawer()
+
     try:
         # sw.run(led.setEmergency, bluetooth.sendMsg)
         # Battery.run(bluetooth.sendMsg())
@@ -31,6 +33,7 @@ def main():
                       file_manager.save_image_LED,
                       file_manager.get_exists_LED)
         mpu.run(bluetooth.send_message)
+        graph_drawer.run(mpu.get_coll_test_value)
 
     except KeyboardInterrupt:
         print("main KeyboardInterrupt")
