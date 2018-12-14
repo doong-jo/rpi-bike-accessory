@@ -1,15 +1,16 @@
 from mpu6050 import mpu6050
 import threading
 import math
-import time
 import datetime
+from pytz import timezone
 from velocity_corner import vel_corner
+from filemgr import FileManager
 
 GYRO_ANGLE_DIVIDE = 131.
 ACC_DIMENSION_DIVIDE=16384.
 ANALYZE_INTERVAL_TIME = 3
-ANGLE_DEVICE = 12
-ACC_DEVICE = 1.5
+RESPONSE_ANGLE_LED = 12
+RESPONSE_ACC_DEVICE = 1.5
 
 #  DEFINE COMPLIMENTARY CONSTANTS
 COMPLIMENTARY_ALPHA = 0.98
@@ -19,40 +20,8 @@ COMPLIMENTARY_DT = 0.02
 BT_SIGNAL_FILTER = "F"
 BT_READ_BYTE_SEPARATE = "!S!"
 
-COLLISTION_PATTERN = [
-1.41226445188,
-1.40029894184,
-1.41644903838,
-1.30749279495,
-1.27942919918,
-1.15871940068,
-1.19272821459,
-1.16987317898,
-1.39911950112,
-1.48676838746,
-1.70403424208,
-1.60415977962,
-2.98468135234,
-9.26755877997,
-15.4548951434,
-5.82454105117,
-10.4481229521,
-19.8617359319,
-19.6431323521,
-7.72910076886,
-6.98685517678,
-7.25668107286,
-6.70277996069,
-8.96742950234,
-9.00531143954,
-7.73123120373,
-7.39294000715,
-7.37609547121,
-7.62725764654,
-8.0206784758,
-]
-
-PATTERN_LENGTH = len(COLLISTION_PATTERN)
+PATTERN_SAMPLE = {}
+PATTERN_LENGTH = 50
 
 def get_y_rotation(x, y, z):
     radians = math.atan2((-1)*z, dist(y, x))
@@ -75,12 +44,13 @@ class Mpu(object):
         self._gyroData = {
             'complimentary': 0.0,
             'angle_x': 0.0,
-            'similarity': 0.0,
         }
-        self._gyroTrigger = False
+        self._gyroBluetoothSendTrigger = False
+        self._collision_model = FileManager.get_collision_model()
+        self._collision_model_len = len(self._collision_model)
 
     def set_bluetooth_trigger(self, enable):
-        self._gyroTrigger = enable
+        self._gyroBluetoothSendTrigger = enable
 
     def cosine_similarity(self, a, b):
         return sum([i * j for i, j in zip(a, b)]) / (
@@ -89,10 +59,7 @@ class Mpu(object):
     def euclidean_distance(self, a, b):
         return math.sqrt(sum([(i - j) * (i - j) for i, j in zip(a, b)]))
 
-    def get_coll_test_value(self):
-        return self._gyroData['similarity']
-
-    def detect(self, bluetooth_send_cb):
+    def detect(self, bluetooth_send_cb, buzer_sound):
         vel_cor= vel_corner()
         sensor_data_store = []
 
@@ -116,55 +83,23 @@ class Mpu(object):
             angle_x = (COMPLIMENTARY_ALPHA * (angle_x + (dgy_z * COMPLIMENTARY_DT))) + ((1-COMPLIMENTARY_ALPHA) * deg_x)
             angle_y = (COMPLIMENTARY_ALPHA * (angle_y + (dgy_y * COMPLIMENTARY_DT))) + ((1-COMPLIMENTARY_ALPHA) * deg_y)
 
-            self._gyroData['complimentary'] = dist(angle_x, angle_y)
-            self._gyroData['angle_x'] = angle_x
+            # self._gyroData['complimentary'] = dist(angle_x, angle_y)
 
             sensor_data_store.append(absolute_acc)
 
-            if len(sensor_data_store) > PATTERN_LENGTH:
+            if len(sensor_data_store) > self._collision_model_len:
                 sensor_data_store.pop(0)
-                # print "cosigne_similarity : " + (str)(self.cosine_similarity(COLLISTION_PATTERN, sensor_data_store)) \
-                #       + "/////" + (str)(absolute_acc)
-                #
 
-                self._gyroData['similarity'] = self.cosine_similarity(COLLISTION_PATTERN, sensor_data_store)
-                # self._gyroData['similarity'] = self.euclidean_distance(COLLISTION_PATTERN, sensor_data_store)
+                self._gyroData['date'] = datetime.datetime.now(timezone('Asia/Seoul'))
+                self._gyroData['accel'] = absolute_acc
+                self._gyroData['angle_x'] = angle_x
 
-                # if self.cosine_similarity(COLLISTION_PATTERN, sensor_data_store) > 0.9 :
-                #     print "!!!!!!!!!!!!! Collision !!!!!!!!!!!!!!"
+                FileManager.save_append_collision_log(self._gyroData)
 
-                # print "euclidean_distance : " + (str)(self.euclidean_distance(COLLISTION_PATTERN, sensor_data_store)) \
-                #       + "/////" + (str)(absolute_acc)
-
-
-            cur_time = time.time()
-
-            # sensor_data_store.append({
-            #     'time': time.time(),
-            #     'accel': absolute_acc
-            # })
-            # accel_interval = accel_interval + absolute_acc
-            #
-            # remove_data = sensor_data_store[0]
-            #
-            # if cur_time - remove_data['time'] > ANALYZE_INTERVAL_TIME:
-            #     accel_interval = accel_interval - remove_data['accel']
-            #
-            #     store_size = len(sensor_data_store)
-            #     accel_det = accel_interval / store_size
-            #     self._gyroData['accel'] = accel_det
-            #
-            #     sensor_data_store.remove(remove_data)
-
-
-
-
-            # print (str)(datetime.datetime.now()) + " /////// " + (str)(absolute_acc)
-
-
-
-
-
+                if self.cosine_similarity(self._collision_model, sensor_data_store) > 0.9:
+                    buzer_sound(True)
+                    print self._gyroData['angle_x']
+                    print "!!!!!!!!!!!!! Collision !!!!!!!!!!!!!!"
 
 
             # slow-down and corner interface
@@ -174,9 +109,8 @@ class Mpu(object):
             # if (angle_x <= -ANGLE_DEVICE or angle_x >= ANGLE_DEVICE) and vel_cor.get_running_state() is False:
             #     vel_cor.run(2)
 
-            if self._gyroTrigger is False:
+            if self._gyroBluetoothSendTrigger is False:
                 continue
-
 
             # bluetooth_send_cb(BT_SIGNAL_FILTER + BT_READ_BYTE_SEPARATE + (str)(self._gyroData['complimentary']) +
             #                 BT_READ_BYTE_SEPARATE + (str)(self._gyroData['angle_x']) + BT_READ_BYTE_SEPARATE +
@@ -186,8 +120,8 @@ class Mpu(object):
             #bluetooth_send_cb(BT_SIGNAL_FILTER + BT_READ_BYTE_SEPARATE + (str)(self._gyroData['angle_x']) +
             #                  BT_READ_BYTE_SEPARATE + (str)(self._gyroData['accel']))
 
-    def run(self, bluetooth_send_cb):
-        t1 = threading.Thread(target=self.detect, args=(bluetooth_send_cb,))
+    def run(self, bluetooth_send_cb, buzer_sound):
+        t1 = threading.Thread(target=self.detect, args=(bluetooth_send_cb, buzer_sound,))
         t1.daemon = True
         t1.start()
 

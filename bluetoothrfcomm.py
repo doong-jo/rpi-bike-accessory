@@ -57,6 +57,7 @@ class BluetoothRFCOMM(object):
         self._isConnected = False
         self._client_sock = None
 
+    @staticmethod
     def send_message(self, string):
         if self._isConnected is False:
             return
@@ -74,7 +75,10 @@ class BluetoothRFCOMM(object):
         except AttributeError:
             print ("sendMsg Attrubute Error")
 
-    def receive_message(self, led_set_attribute, led_get_info, gyro_bluetooth_trigger, file_save_image, file_get_exists):
+    def receive_message(self,
+                        led_set_attribute,
+                        led_get_info,
+                        gyro_bluetooth_trigger):
         while True:
             self._sendFineState = True
             self._isConnected = False
@@ -115,7 +119,7 @@ class BluetoothRFCOMM(object):
                         value_data = split_data[1]
 
                         cur_name_LED = value_data
-                        exists = file_get_exists(cur_name_LED)
+                        exists = FileManager.get_exists_LED(cur_name_LED)
 
                         if exists:
                             exists = BT_SIGNAL_RES_EXIST_LED
@@ -151,7 +155,7 @@ class BluetoothRFCOMM(object):
                     elif signal_data == BT_SIGNAL_DOWNLOAD_DONE_LED:
                         # print("DONE DOWNLOAD LED")
                         # print("final bitmap_byte_arr_LED length : ", len(bitmap_byte_arr_LED))
-                        file_save_image(cur_name_LED, bitmap_byte_arr_LED)
+                        FileManager.save_image_LED(cur_name_LED, bitmap_byte_arr_LED)
                         bitmap_byte_arr_LED = ""
                         led_set_attribute(cur_name_LED, LED_TYPE_SPRITE, LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE)
 
@@ -188,7 +192,12 @@ class BluetoothRFCOMM(object):
                     server_sock.close()
                     break
 
-    def run(self, led_set_attribute, led_get_info, gyro_bluetooth_trigger, save_image, get_exists):
+    def run(self,
+            led_set_attribute,
+            led_get_info,
+            gyro_bluetooth_trigger,
+            save_image,
+            get_exists):
         t1 = threading.Thread(target=self.receive_message,
                               args=(led_set_attribute,
                                     led_get_info,
