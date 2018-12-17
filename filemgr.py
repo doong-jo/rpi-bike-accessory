@@ -14,6 +14,8 @@ FILE_DIR_RESOURCE = "./res/"
 FILE_FORMAT_LED_IMAGE = ".png"
 #######################################################
 
+FILE_BUFFERING = 1024
+
 
 class FileManager(object):
     def __init__(self):
@@ -22,11 +24,11 @@ class FileManager(object):
     @staticmethod
     def get_collision_model():
         try:
-            with open(FILE_COLLISION_PATTERN, mode='rt', buffering=1024) as fileContent:
+            with open(FILE_COLLISION_PATTERN, mode='rt', buffering=FILE_BUFFERING) as fileContent:
                 data_arr = []
                 for line in fileContent:
                     try:
-                        data_arr.append(line)
+                        data_arr.append(float(line))
                     except IndexError:
                         break
                 return data_arr

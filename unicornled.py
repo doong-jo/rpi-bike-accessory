@@ -1,5 +1,3 @@
-import unicornhathd
-
 from sys import exit
 
 try:
@@ -10,6 +8,11 @@ except ImportError:
 import threading
 import time
 from operator import eq
+
+import unicornhathd
+from filemgr import FileManager
+from signal_interface import Signal
+
 
 # -------------------- DEFINE LED ------------------ #
 LED_TYPE_SPRITE = 0
@@ -23,10 +26,6 @@ LED_DEFAULT_BRIGHT = 0.5
 LED_DEFAULT_ROTATION = 90
 LED_DEFAULT_TYPE = LED_TYPE_SPRITE
 
-LED_EMERGENCY_LED_IND = 8
-LED_LEFT_LED_IND = 6
-LED_RIGHT_LED_IND = 7
-
 LED_PASS_ATTRIBUTE = -1
 
 WIDTH, HEIGHT = unicornhathd.get_shape()
@@ -34,15 +33,13 @@ WIDTH, HEIGHT = unicornhathd.get_shape()
 LED_SPRITE_FORMAT = '.png'
 RESOURCE_DIR = 'res/'
 
-BT_READ_BYTE_SEPARATE = "!S!"
-
-
 unicornhathd.rotation(LED_DEFAULT_ROTATION)
 unicornhathd.brightness(LED_DEFAULT_BRIGHT)
 
 class UnicornLED(object):
 
-    def __init__(self, state, save_stat_cb):
+    def __init__(self):
+        state = FileManager.get_read_state()
 
         if state is not None:
             for ledState in state['LED_STATE']:
@@ -59,7 +56,6 @@ class UnicornLED(object):
             unicornhathd.brightness(LED_DEFAULT_BRIGHT)
 
         self._IsInturrpt = False
-        self._saveStateCb = save_stat_cb
 
     # LED Callback Function
     def set_attribute(self, imagename, type, speed, brightness):
@@ -90,17 +86,13 @@ class UnicornLED(object):
             'brightness': self._curBright
         })
 
-        self._saveStateCb(obj_LED)
+        FileManager.save_state(obj_LED)
 
     def get_led_info(self):
-        return "info" + BT_READ_BYTE_SEPARATE + \
-               str(self._curImageName) + BT_READ_BYTE_SEPARATE + \
-               str(self._curSpeed) + BT_READ_BYTE_SEPARATE + \
+        return "info" + Signal.READ_BYTE_SEPARATE + \
+               str(self._curImageName) + Signal.READ_BYTE_SEPARATE + \
+               str(self._curSpeed) + Signal.READ_BYTE_SEPARATE + \
                str(self._curBright)
-
-    def set_emergency(self):
-        self._curImageName = LED_EMERGENCY_LED_IND
-        self._curType = LED_TYPE_BLINK
 
     def blink_LED(self):
         unicornhathd.show()
