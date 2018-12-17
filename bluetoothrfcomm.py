@@ -8,23 +8,6 @@ import subprocess
 BT_SIZE_READ_BYTE = 1024
 BT_UUID = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
 
-# SIGNAL
-BT_SIGNAL_ASK_LED = "AL"
-BT_SIGNAL_RESPONSE_LED = "RL"
-BT_SIGNAL_RES_DOWNLOAD_LED = "RDL"
-BT_SIGNAL_RES_EXIST_LED = "REL"
-BT_SIGNAL_DOWNLOAD_LED = "DL"
-BT_SIGNAL_DOWNLOAD_DONE_LED = "DDL"
-
-BT_SIGNAL_BRIGHTNESS = "B"
-BT_SIGNAL_SPEED = "S"
-
-BT_SIGNAL_FILTER = "F"
-
-BT_SIGNAL_RES = "RES"
-BT_SIGNAL_CONNECTED = "CONNECTED"
-
-BT_READ_BYTE_SEPARATE = "!S!"
 
 # LED
 LED_TYPE_SPRITE = 0
@@ -33,32 +16,36 @@ LED_PASS_ATTRIBUTE = -1
 
 
 class BluetoothRFCOMM(object):
+    isConnected = False
+    sendFineState = False
+    clientSock = None
+
     def __init__(self):
-        self._sendFineState = True
-        self._isConnected = False
-        self._client_sock = None
+        BluetoothRFCOMM.sendFineState = True
+        BluetoothRFCOMM.isConnected = False
 
-    def send_message(self, string):
-        if self._isConnected is False:
-            return
-
-        if self._sendFineState is False:
+    @staticmethod
+    def send_message(string):
+        if BluetoothRFCOMM.isConnected is False or BluetoothRFCOMM.sendFineState is False:
             return
 
         print("try sendMsg" + string)
 
         try:
-            print ("sendMsg Successful")
-            self._sendFineState = False
-            self._client_sock.send(string)
+            print("sendMsg Successful")
+            BluetoothRFCOMM.sendFineState = False
+            BluetoothRFCOMM.clientSock.send(string)
 
         except AttributeError:
-            print ("sendMsg Attrubute Error")
+            print("sendMsg Attrubute Error")
 
-    def receive_message(self, led_set_attribute, led_get_info, gyro_bluetooth_trigger, file_save_image, file_get_exists):
+    def receive_message(self,
+                        led_set_attribute,
+                        led_get_info,
+                        gyro_bluetooth_trigger):
         while True:
-            self._sendFineState = True
-            self._isConnected = False
+            BluetoothRFCOMM.sendFineState = True
+            BluetoothRFCOMM.isConnected = False
 
             gyro_bluetooth_trigger(False)
 
@@ -77,7 +64,7 @@ class BluetoothRFCOMM(object):
                               profiles=[SERIAL_PORT_PROFILE])
 
             print("Waiting for connection : channel %d" % port)
-            self._client_sock, client_info = server_sock.accept()
+            BluetoothRFCOMM.clientSock, client_info = server_sock.accept()
 
             print("Accepted connection from ", client_info)
             subprocess.call(['sudo', 'bluetoothctl', 'discoverable', 'no'])
@@ -85,33 +72,33 @@ class BluetoothRFCOMM(object):
             while True:
                 try:
                     print("Wating for recv")
-                    data = self._client_sock.recv(BT_SIZE_READ_BYTE)
+                    data = BluetoothRFCOMM.clientSock.recv(BT_SIZE_READ_BYTE)
                     print("data length : ", len(data))
                     print("data : %s", data)
 
-                    split_data = data.split(BT_READ_BYTE_SEPARATE)
+                    split_data = data.split(Signal.READ_BYTE_SEPARATE)
                     signal_data = split_data[0]
 
-                    if signal_data == BT_SIGNAL_ASK_LED:
+                    if signal_data == Signal.ASK_LED:
                         print("ASK_LED")
                         value_data = split_data[1]
 
                         cur_name_LED = value_data
-                        exists = file_get_exists(cur_name_LED)
+                        exists = FileManager.get_exists_LED(cur_name_LED)
 
                         if exists:
-                            exists = BT_SIGNAL_RES_EXIST_LED
+                            exists = Signal.RES_EXIST_LED
                             led_set_attribute(cur_name_LED, LED_TYPE_SPRITE, LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE)
                         else:
-                            exists = BT_SIGNAL_RES_DOWNLOAD_LED
+                            exists = Signal.RES_DOWNLOAD_LED
 
                         self.send_message(
-                            BT_SIGNAL_RESPONSE_LED +
-                            BT_READ_BYTE_SEPARATE +
+                            Signal.RESPONSE_LED +
+                            Signal.READ_BYTE_SEPARATE +
                             exists
                         )
 
-                    elif signal_data == BT_SIGNAL_DOWNLOAD_LED:
+                    elif signal_data == Signal.DOWNLOAD_LED:
                         print("DOWNLOAD LED")
                         value_data = split_data[1]
 
@@ -127,29 +114,26 @@ class BluetoothRFCOMM(object):
                             # print("bitmap_byte_arr_LED length : ", len(bitmap_byte_arr_LED))
 
                         self.send_message(
-                            BT_SIGNAL_DOWNLOAD_LED
+                            Signal.DOWNLOAD_LED
                         )
 
-                    elif signal_data == BT_SIGNAL_DOWNLOAD_DONE_LED:
+                    elif signal_data == Signal.DOWNLOAD_DONE_LED:
                         # print("DONE DOWNLOAD LED")
                         # print("final bitmap_byte_arr_LED length : ", len(bitmap_byte_arr_LED))
-                        file_save_image(cur_name_LED, bitmap_byte_arr_LED)
+                        FileManager.save_image_LED(cur_name_LED, bitmap_byte_arr_LED)
                         bitmap_byte_arr_LED = ""
                         led_set_attribute(cur_name_LED, LED_TYPE_SPRITE, LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE)
 
-                    elif signal_data == BT_SIGNAL_SPEED:
+                    elif signal_data == Signal.SPEED:
                         # print("ADJUST SPEED")
-                        value_data = int(split_data[1].split(BT_SIGNAL_SPEED)[0])
+                        value_data = int(split_data[1].split(Signal.SPEED)[0])
                         led_set_attribute(LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, value_data * 0.1, LED_PASS_ATTRIBUTE)
 
-                    elif signal_data == BT_SIGNAL_BRIGHTNESS:
+                    elif signal_data == Signal.BRIGHTNESS:
                         # print("ADJUST BRIGHTNESS")
-                        value_data = int(split_data[1].split(BT_SIGNAL_BRIGHTNESS)[0])
+                        value_data = int(split_data[1].split(Signal.BRIGHTNESS)[0])
                         print "bright value : " + (str)(value_data)
                         led_set_attribute(LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, value_data * 0.1)
-                    
-                    elif signal_data == BT_SIGNAL_RES:
-                        self._sendFineState = True
 
                     elif signal_data == Signal.RES:
                         BluetoothRFCOMM.sendFineState = True
@@ -158,27 +142,28 @@ class BluetoothRFCOMM(object):
                         BluetoothRFCOMM.isConnected = True
                         self.send_message(led_get_info())
 
-                        gyro_bluetooth_trigger(True)
+                        # gyro_bluetooth_trigger(True)
                         # print("receive connect signal")
 
                 except IOError:
                     print("disconnected")
-                    self._client_sock.close()
+                    BluetoothRFCOMM.clientSock.close()
                     server_sock.close()
                     break
 
                 except KeyboardInterrupt:
                     print("receiveMsg KeyboardInterrupt")
-                    self._client_sock.close()
+                    BluetoothRFCOMM.clientSock.close()
                     server_sock.close()
                     break
 
-    def run(self, led_set_attribute, led_get_info, gyro_bluetooth_trigger, save_image, get_exists):
+    def run(self,
+            led_set_attribute,
+            led_get_info,
+            gyro_bluetooth_trigger):
         t1 = threading.Thread(target=self.receive_message,
                               args=(led_set_attribute,
                                     led_get_info,
-                                    gyro_bluetooth_trigger,
-                                    save_image,
-                                    get_exists))
+                                    gyro_bluetooth_trigger,))
         t1.daemon = True
         t1.start()
