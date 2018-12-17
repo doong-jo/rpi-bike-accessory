@@ -1,13 +1,13 @@
-# import time
-# from subprocess import call
-# from vibratesw import vibrateSW
-# from Button_Interface import Button
-# from requset_server import RequestMgr
-# from Battery_Indicator import Battery
 from unicornled import UnicornLED
 from bluetoothrfcomm import BluetoothRFCOMM
 from filemgr import FileManager
 from gyroscope import Mpu
+from buzer import Buzer
+from toggle_button import Button
+from battery import Battery
+
+# from requset_server import RequestMgr
+import subprocess
 
 
 def main():
@@ -35,6 +35,26 @@ def main():
     except KeyboardInterrupt:
         print("main KeyboardInterrupt")
 
+    # turn on bluetooth discoverable
+    subprocess.call(['sudo', 'bluetoothctl', 'discoverable', 'yes'])
+
+    battery = Battery()
+    bluetoothButton = Button()
+    led = UnicornLED()
+    bluetoothRFCOMM = BluetoothRFCOMM()
+    mpu = Mpu()
+    buzer = Buzer()
+
+    # requestMgr = RequestMgr()
+    battery.run()
+    bluetoothButton.run()
+    led.run()
+    bluetoothRFCOMM.run(led.set_attribute, led.get_led_info, mpu.set_bluetooth_trigger)
+    mpu.run()
+    buzer.run()
+
+    # requestMgr.run(gyroSensor.gyroData)
+
     while True:
         try:
             pass
@@ -44,3 +64,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+    GPIO.cleanup(0)
+    subprocess.call(['sudo', 'bluetoothctl', 'discoverable', 'no'])

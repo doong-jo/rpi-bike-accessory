@@ -1,27 +1,8 @@
 from bluetooth import *
 from filemgr import FileManager
 import threading
-
-# DEFINE SIGNAL_INDEX
-# LED           0
-# SPEED         1
-# BRIGHTNESS    2
-# CLOSE         -1
-
-# - : splite word
-
-# LED
-# SIGNAL_INDEX-LED_INDEX-TYPE(SPRITE, BLINK, EFFECT)#
-# LED example : 0-01-0 (LED-01st-LED-SPRITE => LED 1 sprite)
-
-# SPEED
-# SIGNAL_INDEX-SPEED#
-# SPEED example : 1-05-0 (0~10) (SPEED-5 => frame speed = interval 0.5 sec)
-
-# BRIGHTNESS
-# SIGNAL_INDEX-BRIGHTNESS#
-# BRIGHTNESS example : 2-05-0 (0~10) (BRIGHTNESS-5 => brightness level 5)
-
+from signal_interface import Signal
+import subprocess
 
 # ----------- DEFINE BLUETOOTH ATTRIBUTE ----------- #
 BT_SIZE_READ_BYTE = 1024
@@ -99,6 +80,7 @@ class BluetoothRFCOMM(object):
             self._client_sock, client_info = server_sock.accept()
 
             print("Accepted connection from ", client_info)
+            subprocess.call(['sudo', 'bluetoothctl', 'discoverable', 'no'])
 
             while True:
                 try:
@@ -169,8 +151,11 @@ class BluetoothRFCOMM(object):
                     elif signal_data == BT_SIGNAL_RES:
                         self._sendFineState = True
 
-                    elif signal_data == BT_SIGNAL_CONNECTED:
-                        self._isConnected = True
+                    elif signal_data == Signal.RES:
+                        BluetoothRFCOMM.sendFineState = True
+
+                    elif signal_data == Signal.CONNECTED:
+                        BluetoothRFCOMM.isConnected = True
                         self.send_message(led_get_info())
 
                         gyro_bluetooth_trigger(True)
