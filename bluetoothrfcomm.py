@@ -2,6 +2,7 @@ from bluetooth import *
 from filemgr import FileManager
 import threading
 from signal_interface import Signal
+import subprocess
 
 # ----------- DEFINE BLUETOOTH ATTRIBUTE ----------- #
 BT_SIZE_READ_BYTE = 1024
@@ -66,6 +67,7 @@ class BluetoothRFCOMM(object):
             BluetoothRFCOMM.clientSock, client_info = server_sock.accept()
 
             print("Accepted connection from ", client_info)
+            subprocess.call(['sudo', 'bluetoothctl', 'discoverable', 'no'])
 
             while True:
                 try:
@@ -138,7 +140,7 @@ class BluetoothRFCOMM(object):
 
                     elif signal_data == Signal.CONNECTED:
                         BluetoothRFCOMM.isConnected = True
-                        # self.send_message(led_get_info())
+                        self.send_message(led_get_info())
 
                         # gyro_bluetooth_trigger(True)
                         # print("receive connect signal")

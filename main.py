@@ -4,11 +4,16 @@ from gyroscope import Mpu
 from buzer import Buzer
 from toggle_button import Button
 from battery import Battery
+
 # from requset_server import RequestMgr
 
+import subprocess
 import RPi.GPIO as GPIO
 
 def main():
+    # turn on bluetooth discoverable
+    subprocess.call(['sudo', 'bluetoothctl', 'discoverable', 'yes'])
+
     battery = Battery()
     bluetoothButton = Button()
     led = UnicornLED()
@@ -34,7 +39,7 @@ def main():
             print("main KeyboardInterrupt")
 
 
-
 if __name__ == '__main__':
     main()
     GPIO.cleanup(0)
+    subprocess.call(['sudo', 'bluetoothctl', 'discoverable', 'no'])
