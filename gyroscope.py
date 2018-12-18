@@ -10,7 +10,7 @@ from calc import *
 from signal_interface import Signal
 from buzer import Buzer
 
-PASS_SIMIARITY_AMOUNT = 0.9
+PASS_SIMIARITY_AMOUNT = 0.5
 PASS_ROLLOVER_AMOUNT = 40
 
 class Mpu(object):
@@ -18,7 +18,9 @@ class Mpu(object):
     def __init__(self):
         self._sensor = mpu6050(0x68)
         self._gyroData = {
-            'complimentary': 0.0,
+            'date': '',
+            'similarity': 0.0,
+            'accel': 0.0,
             'angle_x': 0.0,
         }
         self._gyroBluetoothSendTrigger = False
@@ -54,11 +56,10 @@ class Mpu(object):
                 # print similarity
 
                 if similarity > PASS_SIMIARITY_AMOUNT:
-                    Buzer.start_sound(True)
                     # print "!!!!!!!!!!!!! Pass accelerormeter !!!!!!!!!!!!!!"
 
-                    # print complementary_obj['x']
-                    if complementary_obj['x'] > PASS_ROLLOVER_AMOUNT:
+                    # print math.fabs(complementary_obj['x'])
+                    if math.fabs(complementary_obj['x']) > PASS_ROLLOVER_AMOUNT:
                         Buzer.start_sound(True)
                         # print "!!!!!!!!!!!!! Pass rollover !!!!!!!!!!!!!!"
 
@@ -66,6 +67,12 @@ class Mpu(object):
                                                      str(absolute_acc) + Signal.READ_BYTE_SEPARATE +
                                                      str(similarity) + Signal.READ_BYTE_SEPARATE +
                                                      str(complementary_obj['x']))
+
+                        self._gyroData['date'] = datetime.datetime.now(timezone('Asia/Seoul'))
+                        self._gyroData['similarity'] = similarity
+                        self._gyroData['accel'] = absolute_acc
+                        self._gyroData['angle_x'] = complementary_obj['x']
+                        FileManager.save_append_collision_log(self._gyroData)
 
                 ##################### For write log ###################3
                 # self._gyroData['date'] = datetime.datetime.now(timezone('Asia/Seoul'))

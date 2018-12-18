@@ -45,6 +45,7 @@ class FileManager(object):
     def save_append_collision_log(data):
         with open(FILE_COLLISION_LOG_NAME, 'a') as outfile:
             outfile.write((str)(data['date']) + ", ")
+            outfile.write((str)(data['similarity']) + ", ")
             outfile.write((str)(data['accel'])+ ", ")
             outfile.write((str)(data['angle_x']) + "\n")
     ####################################################
