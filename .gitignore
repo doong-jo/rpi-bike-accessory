@@ -1,2 +1,4 @@
 .idea/
 res/
+.DS_Store
+*.img

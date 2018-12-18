@@ -126,14 +126,18 @@ class BluetoothRFCOMM(object):
 
                     elif signal_data == Signal.SPEED:
                         # print("ADJUST SPEED")
-                        value_data = int(split_data[1].split(Signal.SPEED)[0])
+                        value_data = int(split_data[1].split(signal_data)[0])
                         led_set_attribute(LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, value_data * 0.1, LED_PASS_ATTRIBUTE)
 
                     elif signal_data == Signal.BRIGHTNESS:
                         # print("ADJUST BRIGHTNESS")
-                        value_data = int(split_data[1].split(Signal.BRIGHTNESS)[0])
-                        print "bright value : " + (str)(value_data)
+                        value_data = int(split_data[1].split(signal_data)[0])
+                        print "bright value : " + str(value_data)
                         led_set_attribute(LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, value_data * 0.1)
+
+                    elif signal_data == Signal.THRESHOLD:
+                        value_data = int(split_data[1].split(signal_data)[0])
+                        print "threshold : " + str(value_data)
 
                     elif signal_data == Signal.RES:
                         BluetoothRFCOMM.sendFineState = True
