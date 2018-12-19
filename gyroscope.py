@@ -63,16 +63,21 @@ class Mpu(object):
                         Buzer.start_sound(True)
                         # print "!!!!!!!!!!!!! Pass rollover !!!!!!!!!!!!!!"
 
-                        BluetoothRFCOMM.send_message(Signal.EMERGENCY + Signal.READ_BYTE_SEPARATE +
-                                                     str(absolute_acc) + Signal.READ_BYTE_SEPARATE +
-                                                     str(similarity) + Signal.READ_BYTE_SEPARATE +
-                                                     str(complementary_obj['x']))
-
                         self._gyroData['date'] = datetime.datetime.now(timezone('Asia/Seoul'))
                         self._gyroData['similarity'] = similarity
                         self._gyroData['accel'] = absolute_acc
                         self._gyroData['angle_x'] = complementary_obj['x']
                         FileManager.save_append_collision_log(self._gyroData)
+
+                        if self._gyroBluetoothSendTrigger is False:
+                            continue
+
+                        BluetoothRFCOMM.send_message(Signal.EMERGENCY + Signal.READ_BYTE_SEPARATE +
+                                                     str(absolute_acc) + Signal.READ_BYTE_SEPARATE +
+                                                     str(similarity) + Signal.READ_BYTE_SEPARATE +
+                                                     str(complementary_obj['x']))
+
+
 
                 ##################### For write log ###################3
                 # self._gyroData['date'] = datetime.datetime.now(timezone('Asia/Seoul'))

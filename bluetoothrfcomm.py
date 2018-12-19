@@ -135,9 +135,18 @@ class BluetoothRFCOMM(object):
                         print "bright value : " + str(value_data)
                         led_set_attribute(LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, value_data * 0.1)
 
-                    elif signal_data == Signal.THRESHOLD:
-                        value_data = int(split_data[1].split(signal_data)[0])
-                        print "threshold : " + str(value_data)
+                    elif signal_data == Signal.THRESHOLD_LEVEL:
+                        value_data = str(split_data[1].split(signal_data)[0])
+                        print "threshold level : " + str(value_data)
+
+                    elif signal_data == Signal.THRESHOLD_ENABLE:
+                        value_data = str(split_data[1].split(signal_data)[0])
+                        if value_data == "true":
+                            gyro_bluetooth_trigger(True)
+                        else:
+                            gyro_bluetooth_trigger(False)
+
+                        print "threshold enable : " + str(value_data)
 
                     elif signal_data == Signal.RES:
                         BluetoothRFCOMM.sendFineState = True
@@ -146,7 +155,7 @@ class BluetoothRFCOMM(object):
                         BluetoothRFCOMM.isConnected = True
                         self.send_message(led_get_info())
 
-                        # gyro_bluetooth_trigger(True)
+                        gyro_bluetooth_trigger(True)
                         # print("receive connect signal")
 
                 except IOError:

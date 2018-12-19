@@ -10,7 +10,9 @@ class Signal(object):
     SPEED = "S"
     FILTER = "F"
     EMERGENCY = "E"
-    THRESHOLD = "T"
+    THRESHOLD_LEVEL = "TL"
+    THRESHOLD_ENABLE = "TE"
+
 
     RES = "RES"
     CONNECTED = "CONNECTED"
