@@ -2,8 +2,6 @@ from unicornled import UnicornLED
 from bluetoothrfcomm import BluetoothRFCOMM
 from gyroscope import Mpu
 from buzer import Buzer
-from toggle_button import Button
-from battery import Battery
 
 # from requset_server import RequestMgr
 
@@ -14,8 +12,6 @@ def main():
     # turn on bluetooth discoverable
     subprocess.call(['sudo', 'bluetoothctl', 'discoverable', 'yes'])
 
-    battery = Battery()
-    bluetoothButton = Button()
     led = UnicornLED()
     bluetoothRFCOMM = BluetoothRFCOMM()
     mpu = Mpu()
@@ -23,8 +19,6 @@ def main():
 
     # requestMgr = RequestMgr()
 
-    battery.run()
-    bluetoothButton.run()
     led.run()
     bluetoothRFCOMM.run(led.set_attribute, led.get_led_info, mpu.set_bluetooth_trigger)
     mpu.run()
