@@ -1,5 +1,6 @@
 class Signal(object):
     ASK_LED = "AL"
+    ASK_LED_SYNC = "ALS"
     RESPONSE_LED = "RL"
     RES_DOWNLOAD_LED = "RDL"
     RES_EXIST_LED = "REL"

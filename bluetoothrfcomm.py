@@ -1,5 +1,4 @@
 from bluetooth import *
-from filemgr import FileManager
 import threading
 from signal_interface import Signal
 import subprocess
@@ -40,14 +39,10 @@ class BluetoothRFCOMM(object):
             print("sendMsg Attrubute Error")
 
     def receive_message(self,
-                        led_set_attribute,
-                        led_get_info,
-                        gyro_bluetooth_trigger):
+                        led_set_attribute):
         while True:
             BluetoothRFCOMM.sendFineState = True
             BluetoothRFCOMM.isConnected = False
-
-            gyro_bluetooth_trigger(False)
 
             bitmap_byte_arr_LED = ""
             cur_name_LED = ""
@@ -84,56 +79,37 @@ class BluetoothRFCOMM(object):
                         value_data = split_data[1]
 
                         cur_name_LED = value_data
-                        exists = FileManager.get_exists_LED(cur_name_LED)
 
-                        if exists:
-                            exists = Signal.RES_EXIST_LED
-                            led_set_attribute(cur_name_LED, LED_TYPE_SPRITE, LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE)
-                        else:
-                            exists = Signal.RES_DOWNLOAD_LED
+                        led_set_attribute(cur_name_LED, LED_TYPE_SPRITE, LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE)
 
                         self.send_message(
                             Signal.RESPONSE_LED +
                             Signal.READ_BYTE_SEPARATE +
-                            exists
+                            cur_name_LED
                         )
 
-                    elif signal_data == Signal.DOWNLOAD_LED:
-                        print("DOWNLOAD LED")
-                        value_data = split_data[1]
+                    if signal_data == Signal.ASK_LED_SYNC:
+                        led_data = split_data[1]
+                        sync_data = split_data[2]
 
-                        if bitmap_byte_arr_LED == "":
-                            # print("first insert bytearray")
-                            bitmap_byte_arr_LED = bytearray(value_data)
-                            # print("bitmap_byte_arr_LED length : ", len(bitmap_byte_arr_LED))
-
-                        else:
-                            # print("after insert bytearray")
-                            appendByteArr = bytearray(value_data)
-                            bitmap_byte_arr_LED = bitmap_byte_arr_LED + appendByteArr
-                            # print("bitmap_byte_arr_LED length : ", len(bitmap_byte_arr_LED))
-
+                        led_set_attribute(led_data, LED_TYPE_SPRITE, LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, sync_data)
                         self.send_message(
-                            Signal.DOWNLOAD_LED
+                            Signal.RESPONSE_LED +
+                            Signal.READ_BYTE_SEPARATE +
+                            led_data
                         )
 
-                    elif signal_data == Signal.DOWNLOAD_DONE_LED:
-                        # print("DONE DOWNLOAD LED")
-                        # print("final bitmap_byte_arr_LED length : ", len(bitmap_byte_arr_LED))
-                        FileManager.save_image_LED(cur_name_LED, bitmap_byte_arr_LED)
-                        bitmap_byte_arr_LED = ""
-                        led_set_attribute(cur_name_LED, LED_TYPE_SPRITE, LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE)
 
                     elif signal_data == Signal.SPEED:
                         # print("ADJUST SPEED")
                         value_data = int(split_data[1].split(signal_data)[0])
-                        led_set_attribute(LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, value_data * 0.1, LED_PASS_ATTRIBUTE)
+                        led_set_attribute(LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, value_data * 0.1, LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE)
 
                     elif signal_data == Signal.BRIGHTNESS:
                         # print("ADJUST BRIGHTNESS")
                         value_data = int(split_data[1].split(signal_data)[0])
                         print "bright value : " + str(value_data)
-                        led_set_attribute(LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, value_data * 0.1)
+                        led_set_attribute(LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, LED_PASS_ATTRIBUTE, value_data * 0.1, LED_PASS_ATTRIBUTE)
 
                     elif signal_data == Signal.THRESHOLD_LEVEL:
                         value_data = str(split_data[1].split(signal_data)[0])
@@ -141,10 +117,6 @@ class BluetoothRFCOMM(object):
 
                     elif signal_data == Signal.THRESHOLD_ENABLE:
                         value_data = str(split_data[1].split(signal_data)[0])
-                        if value_data == "true":
-                            gyro_bluetooth_trigger(True)
-                        else:
-                            gyro_bluetooth_trigger(False)
 
                         print "threshold enable : " + str(value_data)
 
@@ -153,9 +125,7 @@ class BluetoothRFCOMM(object):
 
                     elif signal_data == Signal.CONNECTED:
                         BluetoothRFCOMM.isConnected = True
-                        self.send_message(led_get_info())
 
-                        gyro_bluetooth_trigger(True)
                         # print("receive connect signal")
 
                 except IOError:
@@ -170,13 +140,8 @@ class BluetoothRFCOMM(object):
                     server_sock.close()
                     break
 
-    def run(self,
-            led_set_attribute,
-            led_get_info,
-            gyro_bluetooth_trigger):
+    def run(self, led_set_attribute):
         t1 = threading.Thread(target=self.receive_message,
-                              args=(led_set_attribute,
-                                    led_get_info,
-                                    gyro_bluetooth_trigger,))
+                              args=(led_set_attribute, ))
         t1.daemon = True
         t1.start()
