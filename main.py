@@ -1,36 +1,64 @@
-from unicornled import UnicornLED
-from bluetoothrfcomm import BluetoothRFCOMM
+import time
+from button import Button
 from gyroscope import Mpu
-from buzer import Buzer
-from toggle_button import Button
-from battery import Battery
+from spi_connection import State_of_Charge
+from neopixel_strip import NeopixelStrip
+from pattern_manager import PatternMgr
+from pattern_interface import Pattern
 
-# from requset_server import RequestMgr
+PATTERN_SLEEP_MS = 2
 
-import subprocess
-import RPi.GPIO as GPIO
+GOOD_PATTERN = [
+    Pattern.AUDI_PATTERN_LIGHTS,
+    Pattern.CATCHING_TAIL,
+    Pattern.ROTATING_TWO,
+    Pattern.METEOR_LIGHT,
+    Pattern.EATING_LIGHT,
+    Pattern.VANE_PATTERN,
+]
 
 def main():
-    # turn on bluetooth discoverable
-    subprocess.call(['sudo', 'bluetoothctl', 'discoverable', 'yes'])
-
-    battery = Battery()
-    bluetoothButton = Button()
-    led = UnicornLED()
-    bluetoothRFCOMM = BluetoothRFCOMM()
+    button = Button()
     mpu = Mpu()
-    buzer = Buzer()
 
-    # requestMgr = RequestMgr()
+    in_strip = NeopixelStrip(12, 16, 0)
+    out_strip = NeopixelStrip(13, 24, 1)
 
-    battery.run()
-    bluetoothButton.run()
-    led.run()
-    bluetoothRFCOMM.run(led.set_attribute, led.get_led_info, mpu.set_bluetooth_trigger)
-    mpu.run()
-    buzer.run()
+    PatternMgr.add_led(12, out_strip)
+    PatternMgr.add_led(13, in_strip)
 
-    # requestMgr.run(gyroSensor.gyroData)
+    try:
+        mpu.run()
+        button.run()
+
+        idx = 0
+
+        while True:
+            while idx < len(GOOD_PATTERN):
+                if Mpu.get_inturrptGyro() is True:
+                    PatternMgr.interrupt_show()
+                    time.sleep(0.1)
+                    continue
+
+                PatternMgr.clear()
+                time.sleep(0.3)
+
+                print("led index : ", idx)
+                PatternMgr.set_pattern(GOOD_PATTERN[idx])
+                PatternMgr.run()
+                PatternMgr.join()
+
+                while (out_strip.get_thread().is_alive() or in_strip.get_thread().is_alive()) \
+                        and Mpu.get_inturrptGyro() is False:
+                    pass
+
+                idx = idx + 1
+
+            if Mpu.get_inturrptGyro() is False:
+                idx = 0
+
+    except KeyboardInterrupt:
+        print("main KeyboardInterrupt")
 
     while True:
         try:
@@ -41,5 +69,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    GPIO.cleanup(0)
-    subprocess.call(['sudo', 'bluetoothctl', 'discoverable', 'no'])

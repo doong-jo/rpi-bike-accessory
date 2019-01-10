@@ -1,0 +1,22 @@
+class Pattern(object):
+    COLOR_WIPE              = 0
+    FAST_WIPE               = 1
+    WIPE_TO_MIDDLE          = 2
+    THEATER_CHASE           = 3
+    SLOWLY_TURNING_ON       = 4
+    SLOWLY_TURNING_ON_ONE   = 5
+    SIDE_ON_L               = 6
+    SIDE_ON_R               = 7
+    JUMP_LIGHTS             = 8
+    AUDI_PATTERN_LIGHTS     = 9 ## +
+    CATCHING_TAIL           = 10 ## +
+    SIDE_EMPTY              = 11 ## -
+    ROTATING_TWO            = 12 # +
+    ROTATING_HALF           = 13 # 0
+    CROSS_LIGHT             = 14 # -
+    METEOR_LIGHT            = 15 # +
+    EATING_LIGHT            = 16 # ++
+    QUARTER_LIGHT           = 17 # -
+    VANE_PATTERN            = 18 # +
+    BREAK_ON                = 19
+    SET_CLEAR               = 20

@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="be0aa94d-ef06-4aef-9b97-76b432e452b9" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/battery.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bluetoothrfcomm.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/buzer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calc.py" beforeDir="false" afterPath="$PROJECT_DIR$/calc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/filemgr.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gyroscope.py" beforeDir="false" afterPath="$PROJECT_DIR$/gyroscope.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/launcher.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/common_shock.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/cronlog" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/drive_shock.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mpu6050/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mpu6050/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mpu6050/MANIFEST.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mpu6050/README.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mpu6050/TODO.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mpu6050/bin/mpu6050-example" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mpu6050/mpu6050/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mpu6050/mpu6050/mpu6050.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mpu6050/setup.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/helper_0813/Adafruit-GFX-Library-master.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/helper_0813/Adafruit_LED_Backpack-master.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/helper_0813/helper.ino" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/helper_0903/bicolormatrix.ino" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Adafruit_GFX.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Adafruit_GFX.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Adafruit_SPITFT.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Adafruit_SPITFT.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Adafruit_SPITFT_Macros.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeMono12pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeMono18pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeMono24pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeMono9pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeMonoBold12pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeMonoBold18pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeMonoBold24pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeMonoBold9pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeMonoBoldOblique12pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeMonoBoldOblique18pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeMonoBoldOblique24pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeMonoBoldOblique9pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeMonoOblique12pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeMonoOblique18pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeMonoOblique24pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeMonoOblique9pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSans12pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSans18pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSans24pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSans9pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSansBold12pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSansBold18pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSansBold24pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSansBold9pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSansBoldOblique12pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSansBoldOblique18pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSansBoldOblique24pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSansBoldOblique9pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSansOblique12pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSansOblique18pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSansOblique24pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSansOblique9pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSerif12pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSerif18pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSerif24pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSerif9pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSerifBold12pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSerifBold18pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSerifBold24pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSerifBold9pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSerifBoldItalic12pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSerifBoldItalic18pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSerifBoldItalic24pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSerifBoldItalic9pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSerifItalic12pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSerifItalic18pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSerifItalic24pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/FreeSerifItalic9pt7b.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/Org_01.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/Picopixel.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/Tiny3x3a2pt7b" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/Fonts/TomThumb.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/fontconvert/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/fontconvert/fontconvert.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/fontconvert/fontconvert_win.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/fontconvert/makefonts.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/gfxfont.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/glcdfont.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/library.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit-GFX-Library-master/license.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit_LED_Backpack-master/.github/ISSUE_TEMPLATE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit_LED_Backpack-master/.github/PULL_REQUEST_TEMPLATE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit_LED_Backpack-master/Adafruit_LEDBackpack.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit_LED_Backpack-master/Adafruit_LEDBackpack.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit_LED_Backpack-master/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit_LED_Backpack-master/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit_LED_Backpack-master/library.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/Adafruit_LED_Backpack-master/license.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/libraries/readme.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_bicolormatrix/old_source/source.ino" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old_arduino/prototype_neopixel/neopixel.ino" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/requset_server.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/signal_interface.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/state.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/toggle_button.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/unicornled.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/velocity_corner.py" beforeDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/team8_embedded$gyroscope.coverage" NAME="gyroscope Coverage Results" MODIFIED="1544516989797" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+  <component name="FileEditorManager">
+    <splitter split-orientation="horizontal" split-proportion="0.5">
+      <split-first>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/main.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="844">
+                  <caret line="57" column="23" lean-forward="true" selection-start-line="57" selection-start-column="23" selection-end-line="57" selection-end-column="23" />
+                  <folding>
+                    <element signature="e#0#11#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/gyroscope.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="51">
+                  <caret line="3" selection-start-line="3" selection-end-line="3" selection-end-column="38" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/button.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="272">
+                  <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
+                  <folding>
+                    <element signature="e#0#11#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/spi_connection.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="697">
+                  <caret line="41" column="32" selection-start-line="41" selection-start-column="32" selection-end-line="41" selection-end-column="32" />
+                  <folding>
+                    <element signature="e#0#28#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/rpi_ws281x/python/examples/strandtest.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="102">
+                  <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/pattern_interface.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="153">
+                  <caret line="9" column="9" lean-forward="true" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/pattern_manager.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="2737">
+                  <caret line="161" lean-forward="true" selection-start-line="161" selection-end-line="161" />
+                  <folding>
+                    <element signature="e#0#11#0" expanded="true" />
+                    <element signature="e#14225#14226#0" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/neopixel_strip.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="623">
+                  <caret line="38" column="21" lean-forward="true" selection-start-line="38" selection-start-column="21" selection-end-line="38" selection-end-column="21" />
+                  <folding>
+                    <element signature="e#0#16#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/velocity_corner.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="493">
+                  <caret line="29" column="53" lean-forward="true" selection-start-line="28" selection-start-column="43" selection-end-line="29" selection-end-column="53" />
+                  <folding>
+                    <element signature="e#0#11#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>_collision_model</find>
+      <find>auto_light</find>
+      <find>find_object</find>
+      <find>ledPhaseTrigger</find>
+      <find>ledBrightnessArr</find>
+      <find>patterns</find>
+      <find>LED_TURN_ON</find>
+      <find>get_accel_vector</find>
+      <find>clear_state</find>
+      <find>initial</find>
+      <find>time.sl</find>
+      <find>sleep</find>
+      <find>cond</find>
+      <find>METEOR_LIGHT</find>
+      <find>get_z_rotation</find>
+      <find>acc_data</find>
+      <find>meteor</find>
+      <find>audi</find>
+      <find>run</find>
+      <find>color_reverse</find>
+      <find>get_thread</find>
+      <find>set_clear</find>
+      <find>clear</find>
+      <find>PIN_NUM</find>
+      <find>stop</find>
+      <find>PatternMgr.set_break_trigger(True)</find>
+      <find>if Mpu.get_inturrptGyro()</find>
+      <find>break_trigger</find>
+      <find>time_cal</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>if break_trigger</replace>
+      <replace>PatternMgr.break_trigger</replace>
+    </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/calc.py" />
+        <option value="$PROJECT_DIR$/velocity_corner.py" />
+        <option value="$PROJECT_DIR$/Button_Interface.py" />
+        <option value="$PROJECT_DIR$/spi_connection.py" />
+        <option value="$PROJECT_DIR$/pattern_interface.py" />
+        <option value="$PROJECT_DIR$/neopixel_strip.py" />
+        <option value="$PROJECT_DIR$/gyroscope.py" />
+        <option value="$PROJECT_DIR$/pattern_manager.py" />
+        <option value="$PROJECT_DIR$/button.py" />
+        <option value="$PROJECT_DIR$/main.py" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" fullScreen="true">
+    <option name="x" value="-268" />
+    <option name="y" value="-1080" />
+    <option name="width" value="1920" />
+    <option name="height" value="1080" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="team8_embedded" type="b2602c69:ProjectViewProjectNode" />
+              <item name="team8_embedded" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="be0aa94d-ef06-4aef-9b97-76b432e452b9" name="Default Changelist" comment="" />
+      <created>1542089817269</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1542089817269</updated>
+      <workItem from="1547030825699" duration="351000" />
+      <workItem from="1547031233211" duration="6524000" />
+      <workItem from="1547084658528" duration="14818000" />
+    </task>
+    <task id="LOCAL-00001" summary="Modify:Bright &amp; Speed bluetooth read bug">
+      <created>1542539500753</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1542539500753</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="21693000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-268" y="-1080" width="1920" height="1080" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1400426" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Docker" order="0" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Database Changes" order="1" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="2" weight="0.32970297" />
+      <window_info anchor="bottom" id="Python Console" order="3" weight="0.3148515" />
+      <window_info anchor="bottom" id="Event Log" order="4" side_tool="true" weight="0.32970297" />
+      <window_info anchor="bottom" id="File Transfer" order="5" weight="0.26435643" />
+      <window_info anchor="bottom" id="Message" order="6" />
+      <window_info anchor="bottom" id="Find" order="7" weight="0.32970297" />
+      <window_info anchor="bottom" id="Run" order="8" weight="0.32970297" />
+      <window_info anchor="bottom" id="Debug" order="9" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="10" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="11" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="12" />
+      <window_info anchor="right" id="Remote Host" order="0" weight="0.32960597" />
+      <window_info anchor="right" id="SciView" order="1" weight="0.32960597" />
+      <window_info anchor="right" id="Database" order="2" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="3" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="4" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="5" weight="0.25" />
+      <window_info anchor="right" x="4" y="45" width="750" height="855" id="Terminal" order="6" weight="0.32108626" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Modify:Bright &amp; Speed bluetooth read bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modify:Bright &amp; Speed bluetooth read bug" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/button.py</url>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/battery.py" />
+    <entry file="file://$PROJECT_DIR$/launcher.sh" />
+    <entry file="file://$PROJECT_DIR$/signal_interface.py" />
+    <entry file="file://$PROJECT_DIR$/bluetoothrfcomm.py" />
+    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2018.2/remote_sources/-1965838824/201544331/argparse.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="419">
+          <caret line="1645" column="40" selection-start-line="1645" selection-start-column="40" selection-end-line="1645" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/coveragepy/__init__.py" />
+    <entry file="file://$PROJECT_DIR$/coverage_runner/run_coverage.py" />
+    <entry file="file://$PROJECT_DIR$/neopixel_main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rpi_ws281x/python/examples/strandtest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/calc.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="28" column="25" selection-start-line="28" selection-start-column="25" selection-end-line="28" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pattern_interface.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="9" lean-forward="true" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spi_connection.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="697">
+          <caret line="41" column="32" selection-start-line="41" selection-start-column="32" selection-end-line="41" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/velocity_corner.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="493">
+          <caret line="29" column="53" lean-forward="true" selection-start-line="28" selection-start-column="43" selection-end-line="29" selection-end-column="53" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/neopixel_strip.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="623">
+          <caret line="38" column="21" lean-forward="true" selection-start-line="38" selection-start-column="21" selection-end-line="38" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#16#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gyroscope.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" selection-start-line="3" selection-end-line="3" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/button.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="844">
+          <caret line="57" column="23" lean-forward="true" selection-start-line="57" selection-start-column="23" selection-end-line="57" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pattern_manager.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2737">
+          <caret line="161" lean-forward="true" selection-start-line="161" selection-end-line="161" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#14225#14226#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

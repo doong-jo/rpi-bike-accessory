@@ -1,107 +1,59 @@
 from mpu6050 import mpu6050
 import threading
-import math
-import datetime
-from pytz import timezone
-from bluetoothrfcomm import BluetoothRFCOMM
-from velocity_corner import vel_corner
-from filemgr import FileManager
 from calc import *
-from signal_interface import Signal
-from buzer import Buzer
+from pattern_manager import PatternMgr
 
-PASS_SIMIARITY_AMOUNT = 0.5
-PASS_ROLLOVER_AMOUNT = 40
+THR_ROLLOVER_AMOUNT = 25
+THE_ACC_AMOUNT = 10
+
 
 class Mpu(object):
+    inturrptGyro = False
 
     def __init__(self):
         self._sensor = mpu6050(0x68)
         self._gyroData = {
             'date': '',
-            'similarity': 0.0,
             'accel': 0.0,
             'angle_x': 0.0,
         }
         self._gyroBluetoothSendTrigger = False
-        self._collision_model = FileManager.get_collision_model()
-        self._collision_model_len = len(self._collision_model)
 
     def set_bluetooth_trigger(self, enable):
         self._gyroBluetoothSendTrigger = enable
 
     def detect(self):
-        vel_cor= vel_corner()
-        sensor_data_store = []
-
         complementary_obj = {'x': 0}
+        acc_data = {}
+        gyro_data = {}
 
         while True:
             acc_data = self._sensor.get_accel_data()
             gyro_data = self._sensor.get_gyro_data()
 
             if acc_data is None or gyro_data is None:
-                print "none"
                 continue
 
-            absolute_acc = Calc.get_accel_vector(acc_data)
-            complementary_obj = Calc.get_complementary(acc_data, gyro_data, complementary_obj)
+            try:
+                absolute_acc = Calc.get_accel_vector(acc_data)
+                complementary_obj = Calc.get_complementary(acc_data, gyro_data, complementary_obj)
 
-            sensor_data_store.append(absolute_acc)
+            except AttributeError:
+                continue
 
-            if len(sensor_data_store) > self._collision_model_len:
-                sensor_data_store.pop(0)
+            if acc_data['z'] <= -THE_ACC_AMOUNT or \
+                    complementary_obj['x'] <= -THR_ROLLOVER_AMOUNT\
+                    or complementary_obj['x'] >= THR_ROLLOVER_AMOUNT:
+                Mpu.inturrptGyro = True
+                PatternMgr.set_break_trigger(True)
 
-                similarity = Calc.cosine_similarity(self._collision_model, sensor_data_store)
-                # print similarity
+            else:
+                Mpu.inturrptGyro = False
+                PatternMgr.set_break_trigger(False)
 
-                if similarity > PASS_SIMIARITY_AMOUNT:
-                    # print "!!!!!!!!!!!!! Pass accelerormeter !!!!!!!!!!!!!!"
-
-                    # print math.fabs(complementary_obj['x'])
-                    if math.fabs(complementary_obj['x']) > PASS_ROLLOVER_AMOUNT:
-                        Buzer.start_sound(True)
-                        # print "!!!!!!!!!!!!! Pass rollover !!!!!!!!!!!!!!"
-
-                        self._gyroData['date'] = datetime.datetime.now(timezone('Asia/Seoul'))
-                        self._gyroData['similarity'] = similarity
-                        self._gyroData['accel'] = absolute_acc
-                        self._gyroData['angle_x'] = complementary_obj['x']
-                        FileManager.save_append_collision_log(self._gyroData)
-
-                        if self._gyroBluetoothSendTrigger is False:
-                            continue
-
-                        BluetoothRFCOMM.send_message(Signal.EMERGENCY + Signal.READ_BYTE_SEPARATE +
-                                                     str(absolute_acc) + Signal.READ_BYTE_SEPARATE +
-                                                     str(similarity) + Signal.READ_BYTE_SEPARATE +
-                                                     str(complementary_obj['x']))
-
-
-
-                ##################### For write log ###################3
-                # self._gyroData['date'] = datetime.datetime.now(timezone('Asia/Seoul'))
-                # self._gyroData['accel'] = absolute_acc
-                # self._gyroData['angle_x'] = complementary_obj['x']
-                # FileManager.save_append_collision_log(self._gyroData)
-
-            ################### slow-down and corner interface ###################
-            # if acc_data['z'] <= -ACC_DEVICE and vel_cor.get_running_state() is False:
-            #     vel_cor.run(1)
-            #
-            # if (angle_x <= -ANGLE_DEVICE or angle_x >= ANGLE_DEVICE) and vel_cor.get_running_state() is False:
-            #     vel_cor.run(2)
-
-            ######################### bluetooth #########################
-            # if self._gyroBluetoothSendTrigger is False:
-            #     continue
-
-            # BluetoothRFCOMM.send_message(Signal.FILTER + Signal.READ_BYTE_SEPARATE + (str)(self._gyroData['complimentary']) +
-            #                 Signal.READ_BYTE_SEPARATE + (str)(self._gyroData['angle_x']) + Signal.READ_BYTE_SEPARATE +
-            #                 (str)(self._gyroData['accel']))
-
-            # BluetoothRFCOMM.send_message(Signal.FILTER + Signal.READ_BYTE_SEPARATE + (str)(self._gyroData['angle_x']) +
-            #                  Signal.READ_BYTE_SEPARATE + (str)(self._gyroData['accel']))
+    @staticmethod
+    def get_inturrptGyro():
+        return Mpu.inturrptGyro
 
     def run(self):
         t1 = threading.Thread(target=self.detect, args=())
